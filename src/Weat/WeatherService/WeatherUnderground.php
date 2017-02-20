@@ -8,12 +8,61 @@ use Weat\Weather;
 
 class WeatherUnderground extends AbstractWeatherService
 {
-    public function getWeather()
+
+    /**
+     * @param Location $location
+     * @return \stdClass
+     */
+    protected function getWeatherDataFromApi(Location $location)
     {
-        $data = $this->getWeatherData();
+        $key = $this->config->wunderground_key;
 
-        $weather = new Weather();
+        $features = array(
+            'alerts',
+            'almanac',
+            'astronomy',
+            'conditions',
+            'forecast',
+            'geolookup',
+            'satellite',
+            'tide',
+        );
 
+        $featuresList = implode('/', $features);
+
+        $query = $this->getQuery($location);
+
+        $url = "https://api.wunderground.com/api/$key/$featuresList/q/$query";
+
+        $jsonData = file_get_contents($url);
+        if ($jsonData === false) {
+            throw new Exception("couldn't get the wundergroud JSON data. might have exceeded API limits");
+        }
+
+        // all weather underground's links are http, but https seems to work just fine
+        // I can't find any way to prefer https, so just replace them here
+        $jsonData = str_replace('http://', 'https://', $jsonData);
+
+        $data = json_decode($jsonData);
+
+        if (isset($data->response->error)) {
+            throw new Exception("wunderground API error: " . $data->response->error->description);
+        }
+
+        if (!file_put_contents($this->cacheFile, json_encode($data))) {
+            throw new Exception("Could not write wunderground cache file");
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param  Weather $weather
+     * @param  \stdClass $data
+     * @return Weather
+     */
+    protected function hydrate(Weather $weather, \stdClass $data)
+    {
         $weather->location = $data->current_observation->display_location->full;
         $weather->time = $data->current_observation->observation_time;
         $weather->current = $data->current_observation->weather;
@@ -53,76 +102,28 @@ class WeatherUnderground extends AbstractWeatherService
         $weather->sunrise = $sun['rise'];
         $weather->sunset = $sun['set'];
 
-
         return $weather;
     }
 
     /**
-     * @return string
-     */
-    protected function getWeatherDataFromApi()
-    {
-        echo "getting data from wunderground api...\n";
-
-        $key = $this->config->wunderground_key;
-
-        $features = array(
-            'alerts',
-            'almanac',
-            'astronomy',
-            'conditions',
-            'forecast',
-            'geolookup',
-            'satellite',
-            'tide',
-        );
-
-        $featuresList = implode('/', $features);
-
-        $query = $this->getQuery();
-
-        $url = "https://api.wunderground.com/api/$key/$featuresList/q/$query";
-
-        echo "fetching $url\n";
-
-        $jsonData = file_get_contents($url);
-        if ($jsonData === false) {
-            throw new Exception("couldn't get the wundergroud JSON data. might have exceeded API limits");
-        }
-
-        // all weather underground's links are http, but https seems to work just fine
-        // I can't find any way to prefer https, so just replace them here
-        $jsonData = str_replace('http://', 'https://', $jsonData);
-
-        $data = json_decode($jsonData);
-
-        if (isset($data->response->error)) {
-            throw new Exception("wunderground API error: " . $data->response->error->description);
-        }
-
-        if (!file_put_contents($this->cacheFile, json_encode($data))) {
-            throw new Exception("Could not write wunderground cache file");
-        }
-
-        return $data;
-    }
-
-    /**
+     * @param Location $location
      * @return string
      * @link https://www.wunderground.com/weather/api/d/docs?d=data/index
      */
-    private function getQuery()
+    private function getQuery(Location $location)
     {
-        if (!empty($this->location->zip)) {
-            return $this->location->zip . '.json';
+        if (!empty($location->zip)) {
+            return $location->zip . '.json';
         }
 
-        if (!empty($this->location->lat) && !empty($this->location->lon)) {
-            return sprintf("%s,%s.json", $this->location->lat, $this->location->lon);
+        if (!empty($location->lat) && !empty($location->lon)) {
+            return sprintf("%s,%s.json", $location->lat, $location->lon);
         }
 
         if (!empty($location->ip)) {
-            return "autoip.json?geo_ip={$ip}";
+            if (filter_var($location->ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) ) {
+                return "autoip.json?geo_ip={$ip}";
+            }
         }
 
         return 'autoip.json';

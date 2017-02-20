@@ -6,6 +6,10 @@ class WeatherService
 {
     private $service;
 
+    /**
+     * @param Config $config
+     * @param string $service
+     */
     public function __construct(Config $config, $service = '')
     {
         $this->service = $this->getService($config, $service);
@@ -17,16 +21,13 @@ class WeatherService
      */
     public function getWeather(Location $location)
     {
-        $this->service->setLocation($location);
-
-        return $this->service->getWeather();
+        return $this->service->getWeather($location);
     }
 
     private function getService(Config $config, $service)
     {
         switch ($service) {
             case 'wunderground':
-                echo 'weather underground service requested!' . "\n";
                 return new WeatherService\WeatherUnderground($config);
             case 'accuweather':
                 return new WeatherService\AccuWeather;

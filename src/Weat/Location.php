@@ -24,4 +24,7 @@ class Location
 
     /** @var string */
     public $ip;
+
+    /** @var string */
+    public $timezone;
 }

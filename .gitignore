@@ -3,5 +3,3 @@ config/config.php
 composer.lock
 vendor
 
-cache/*
-!cache/.keep

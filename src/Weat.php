@@ -21,7 +21,7 @@ class Weat
     {
         $this->config = new Config();
         $this->reader = new Reader($this->config->city_db);
-        $this->twig = $this->getTwig();
+        $this->twig = $this->getTwig($this->config->twig);
     }
 
     public function run()
@@ -50,6 +50,7 @@ class Weat
         $location->ip = $ip;
 
         if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) ) {
+            // if it's a local IP, no need to try and geolocate
             return $location;
         }
 
@@ -61,14 +62,15 @@ class Weat
         $location->zip = $record->postal->code;
         $location->lat = $record->location->latitude;
         $location->lon = $record->location->longitude;
+        $location->timezone = $record->location->timeZone;
 
         return $location;
     }
 
-    private function getTwig()
+    private function getTwig(array $twigConfig)
     {
-        $loader = new Twig_Loader_Filesystem($this->config->template_dir);
-        $twig = new Twig_Environment($loader, array());
+        $loader = new Twig_Loader_Filesystem($twigConfig['template_dir']);
+        $twig = new Twig_Environment($loader, $twigConfig['options']);
 
         return $twig;
     }
