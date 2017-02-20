@@ -24,8 +24,8 @@ Visibility: {{ weather.visibility }}
 Precipitation: {{ weather.precipitation }}
 
 Moon: {{ weather.moon }}
-Sunrise: {{ sun.rise | localizeddate('none', 'medium', locale, timezone, "kk:mm") }} ({{ sun.riseDiff | date('%R%h:%i') }})
-Sunset: {{ sun.set | localizeddate('none', 'medium', locale, timezone, "kk:mm") }} ({{ sun.setDiff | date('%R%h:%i') }})
+Sunrise: {{ sun.rise | localizeddate('none', 'medium', locale, timezone, "kk:mm") }} ({{ sun.riseDiff | date('%R%h:%I') }})
+Sunset: {{ sun.set | localizeddate('none', 'medium', locale, timezone, "kk:mm") }} ({{ sun.setDiff | date('%R%h:%I') }})
 
 Average: {{ weather.average|raw }}
 Record: {{ weather.record|raw }}
