@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+    <head>
+    <meta charset="utf-8">
+        <title>weather</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <pre>
+{{ weather.location }}
+{{ weather.time }}
+{% for alert in weather.alerts %}
+    {{ alert }}
+
+{% endfor %}
+<img src="{{ weather.currentIcon }}">
+{{ weather.current }}
+{{ weather.currentTemp }}
+
+Humidity: {{ weather.humidty }}
+Wind: {{ weather.wind }}
+Pressure: {{ weather.pressure }}
+Visibility: {{ weather.visibility }}
+Precipitation: {{ weather.precipitation }}
+-----
+Moon: {{ weather.moon }}
+Sunrise: {{ weather.sunrise }}
+Sunset: {{ weather.sunset }}
+-----
+Average: {{ weather.average|raw }}
+Record: {{ weather.record|raw }}
+-----
+{% for day in weather.forecast %}
+    <img src="{{ day.icon }}">
+    {{ day.day }}
+    {{ day.summary }}
+{% endfor %}
+-----
+{% for tide in weather.tides %}
+    {{ tide.date }} {{ tide.type }} {{ tide.height }}
+{% endfor %}
+-----
+<img src="{{ weather.satellite }}">
+        </pre>
+    </body>
+</html>

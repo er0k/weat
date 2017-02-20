@@ -1,0 +1,14 @@
+pre {
+    font-size: 2em;
+    white-space: pre-wrap;
+    padding: 10px;
+}
+img {
+    position: relative;
+    display: block;
+    float: left;
+    top: 30px;
+    padding-bottom: 30px;
+    padding-right: 20px;
+}
+

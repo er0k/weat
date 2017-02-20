@@ -1,0 +1,9 @@
+{
+    "autoload": {
+        "psr-4": { "": "src/" }
+    },
+    "require": {
+        "geoip2/geoip2": "^2.4",
+        "twig/twig": "^1.31"
+    }
+}

@@ -1,0 +1,10 @@
+<?php
+
+return array(
+    // https://www.wunderground.com/weather/api
+    'wunderground_key' => '',
+    // http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
+    'city_db' => '/opt/geoip/GeoLite2-City.mmdb',
+    'country_db' => '/opt/geoip/GeoLite2-Country.mmdb',
+    'template_dir' => 'resources/templates',
+);
