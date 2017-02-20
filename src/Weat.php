@@ -29,14 +29,11 @@ class Weat
     public function run()
     {
         $location = $this->getLocation();
-        // print_r($location);
 
-        $wg = new WeatherService($this->config, 'wunderground');
+        $wg = new WeatherService($this->config);
         $weather = $wg->getWeather($location);
-        // print_r('weather');
 
         $sun = $this->getSunTimes($location, $weather);
-        // print_r($sun);
 
         echo $this->twig->render('index.html', array(
             'location' => $location,
