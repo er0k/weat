@@ -8,7 +8,7 @@
     <body>
         <pre>
 {{ weather.location }}
-{{ weather.time }}
+{{ weather.timeFriendly }}
 {% for alert in weather.alerts %}
     {{ alert }}
 
@@ -22,24 +22,24 @@ Wind: {{ weather.wind }}
 Pressure: {{ weather.pressure }}
 Visibility: {{ weather.visibility }}
 Precipitation: {{ weather.precipitation }}
------
+
 Moon: {{ weather.moon }}
-Sunrise: {{ weather.sunrise }}
-Sunset: {{ weather.sunset }}
------
+Sunrise: {{ sun.rise | localizeddate('none', 'medium', locale, timezone, "kk:mm") }} ({{ sun.riseDiff | date('%R%h:%i') }})
+Sunset: {{ sun.set | localizeddate('none', 'medium', locale, timezone, "kk:mm") }} ({{ sun.setDiff | date('%R%h:%i') }})
+
 Average: {{ weather.average|raw }}
 Record: {{ weather.record|raw }}
------
+
 {% for day in weather.forecast %}
     <img src="{{ day.icon }}">
     {{ day.day }}
     {{ day.summary }}
 {% endfor %}
------
+
 {% for tide in weather.tides %}
     {{ tide.date }} {{ tide.type }} {{ tide.height }}
 {% endfor %}
------
+
 <img src="{{ weather.satellite }}">
         </pre>
     </body>

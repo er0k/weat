@@ -8,7 +8,10 @@ class Weather
     public $location;
 
     /** @var string */
-    public $time;
+    public $timeFriendly;
+
+    /** @var string */
+    public $timeRfc;
 
     /** @var string */
     public $current;
@@ -60,4 +63,16 @@ class Weather
 
     /** @var string */
     public $satellite;
+
+    /** @var string */
+    public $timezone;
+
+    /** @var string */
+    public $lat;
+
+    /** @var string */
+    public $lon;
+
+    /** @var string */
+    public $epoch;
 }

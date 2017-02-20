@@ -64,7 +64,7 @@ class WeatherUnderground extends AbstractWeatherService
     protected function hydrate(Weather $weather, \stdClass $data)
     {
         $weather->location = $data->current_observation->display_location->full;
-        $weather->time = $data->current_observation->observation_time;
+        $weather->timeFriendly = $data->current_observation->observation_time;
         $weather->current = $data->current_observation->weather;
         $weather->currentTemp = $data->current_observation->temp_f . 'F (feels like ' . $data->current_observation->feelslike_f . ')';
         $weather->currentIcon = $data->current_observation->icon_url;
@@ -98,9 +98,14 @@ class WeatherUnderground extends AbstractWeatherService
         }
         $weather->satellite = $data->satellite->image_url;
 
-        $sun = $this->getRelativeSunTimes($data);
-        $weather->sunrise = $sun['rise'];
-        $weather->sunset = $sun['set'];
+        $weather->sunrise = $data->moon_phase->sunrise->hour . ':' . $data->moon_phase->sunrise->minute;
+        $weather->sunset = $data->moon_phase->sunset->hour . ':' . $data->moon_phase->sunset->minute;
+
+        $weather->timezone = $data->current_observation->local_tz_long;
+        $weather->timeRfc = $data->current_observation->observation_time_rfc822;
+        $weather->lat = $data->current_observation->display_location->latitude;
+        $weather->lon = $data->current_observation->display_location->longitude;
+        $weather->epoch = $data->current_observation->observation_epoch;
 
         return $weather;
     }
@@ -127,42 +132,5 @@ class WeatherUnderground extends AbstractWeatherService
         }
 
         return 'autoip.json';
-    }
-
-    private function getRelativeSunTimes($data)
-    {
-        $wgSunriseTime = $data->moon_phase->sunrise->hour . ':' . $data->moon_phase->sunrise->minute;
-        $wgSunsetTime = $data->moon_phase->sunset->hour . ':' . $data->moon_phase->sunset->minute;
-
-        $tz = $data->current_observation->local_tz_long;
-        $lat = $data->current_observation->display_location->latitude;
-        $lon = $data->current_observation->display_location->longitude;
-        $epoch = $data->current_observation->observation_epoch;
-        $timeString = $data->current_observation->observation_time_rfc822;
-
-        $dtz = new \DateTimeZone($tz);
-        $dt = new \DateTime($timeString, $dtz);
-        $offsetInSeconds = $dtz->getOffset($dt);
-        $offset = $offsetInSeconds / 60 / 60;
-        $zenith = 90 + (50 / 60);
-
-        $sunriseTime = date_sunrise($epoch, SUNFUNCS_RET_STRING, $lat, $lon, $zenith, $offset);
-        $sunsetTime = date_sunset($epoch, SUNFUNCS_RET_STRING, $lat, $lon, $zenith, $offset);
-
-        $now = new \DateTime('now', $dtz);
-
-        $sunriseDatetime = new \DateTime($sunriseTime, $dtz);
-        $sunsetDatetime = new \DateTime($sunsetTime, $dtz);
-
-        $riseDiff = $now->diff($sunriseDatetime);
-        $setDiff = $now->diff($sunsetDatetime);
-
-        $riseDiffString = $riseDiff->format("%R%h:%I");
-        $setDiffString = $setDiff->format("%R%h:%I");
-
-        return array(
-            'rise' => "$sunriseTime ($riseDiffString)",
-            'set' => "$sunsetTime ($setDiffString)",
-        );
     }
 }
