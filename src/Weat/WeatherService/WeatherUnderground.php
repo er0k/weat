@@ -96,7 +96,7 @@ class WeatherUnderground extends AbstractWeatherService
 
         $data = json_decode($jsonData);
 
-        if ($data->response->error) {
+        if (isset($data->response->error)) {
             throw new Exception("wunderground API error: " . $data->response->error->description);
         }
 
