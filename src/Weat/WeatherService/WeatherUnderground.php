@@ -11,6 +11,7 @@ class WeatherUnderground extends AbstractWeatherService
 
     /**
      * @param Location $location
+     * @throws Exception
      * @return \stdClass
      */
     protected function getWeatherDataFromApi(Location $location)
@@ -49,7 +50,9 @@ class WeatherUnderground extends AbstractWeatherService
             throw new Exception("wunderground API error: " . $data->response->error->description);
         }
 
-        if (!file_put_contents($this->cacheFile, json_encode($data))) {
+        $cache = $this->getCacheFilename();
+
+        if (!file_put_contents($cache, json_encode($data))) {
             throw new Exception("Could not write wunderground cache file");
         }
 

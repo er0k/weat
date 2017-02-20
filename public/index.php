@@ -8,5 +8,5 @@ $weat = new Weat();
 try {
     $weat->run();
 } catch (Weat\Exception $e) {
-    echo $e;
+    echo "<pre>$e</pre>";
 }

@@ -30,13 +30,13 @@ class WeatherService
             case 'wunderground':
                 return new WeatherService\WeatherUnderground($config);
             case 'accuweather':
-                return new WeatherService\AccuWeather;
+                return new WeatherService\AccuWeather($config);
             case 'openweathermap':
-                return new WeatherService\OpenWeatherMap;
+                return new WeatherService\OpenWeatherMap($config);
             case 'noaa':
-                return new WeatherService\NOAA;
+                return new WeatherService\NOAA($config);
             case 'forecastio':
-                return new WeatherService\ForecastIO;
+                return new WeatherService\ForecastIO($config);;
             default:
                 throw new Exception("uknown weather service");
         }

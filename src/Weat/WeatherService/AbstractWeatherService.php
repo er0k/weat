@@ -62,9 +62,9 @@ abstract class AbstractWeatherService
      */
     protected function getWeatherData(Location $location)
     {
-        $filename = $this->getCacheFilename($location);
+        $cache = $this->getCacheFilename($location);
 
-        if (!file_exists($filename) || time() - filemtime($filename) > self::CACHE_TTL) {
+        if (!file_exists($cache) || time() - filemtime($cache) > self::CACHE_TTL) {
             $data = $this->getWeatherDataFromApi($location);
         } else {
             $data = $this->getWeatherDataFromCache();
@@ -114,13 +114,13 @@ abstract class AbstractWeatherService
     {
         $serviceName = get_called_class();
 
-        $filename = $this->getCacheFilename();
+        $cache = $this->getCacheFilename();
 
-        if (!$filename) {
+        if (!$cache) {
             throw new Exception("could not get {$serviceName} cache data");
         }
 
-        return json_decode(file_get_contents($filename));
+        return json_decode(file_get_contents($cache));
     }
 
     /**

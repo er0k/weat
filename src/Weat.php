@@ -90,6 +90,10 @@ class Weat
         $epoch = $location->lat ? time() : $weather->epoch;
         $timeString = $location->lat ? 'now' : $weather->timeRfc;
 
+        if (!$timezone) {
+            throw new Exception("could not determine timezone");
+        }
+
         $dtz = new \DateTimeZone($timezone);
         $dt = new \DateTime($timeString, $dtz);
         $offsetInSeconds = $dtz->getOffset($dt);
