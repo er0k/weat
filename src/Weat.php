@@ -28,9 +28,11 @@ class Weat
 
     public function run()
     {
+        $service = $this->getService();
+
         $location = $this->getLocation();
 
-        $wg = new WeatherService($this->config);
+        $wg = new WeatherService($this->config, $service);
         $weather = $wg->getWeather($location);
 
         $sun = $this->getSunTimes($location, $weather);
@@ -40,6 +42,13 @@ class Weat
             'weather' => $weather,
             'sun' => $sun,
         ));
+    }
+
+    private function getService()
+    {
+        $service = isset($_GET['s']) ? $_GET['s'] : WeatherService::WEATHER_UNDERGROUND;
+
+        return $service;
     }
 
     /**
