@@ -3,6 +3,8 @@
 return array(
     // https://www.wunderground.com/weather/api
     'wunderground_key' => '',
+    // https://openweathermap.org/appid
+    'open_weather_map_key' => '',
     // http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
     'city_db' => '/opt/geoip/GeoLite2-City.mmdb',
     'country_db' => '/opt/geoip/GeoLite2-Country.mmdb',
