@@ -26,7 +26,7 @@ class Weather
     public $alerts;
 
     /** @var string */
-    public $humidty;
+    public $humidity;
 
     /** @var string */
     public $wind;

@@ -75,7 +75,7 @@ class WeatherUnderground extends AbstractWeatherService
         foreach ($data->alerts as $alert) {
             $weather->alerts[] = $alert->message;
         }
-        $weather->humidty = $data->current_observation->relative_humidity;
+        $weather->humidity = $data->current_observation->relative_humidity;
         $weather->wind = $data->current_observation->wind_string;
         $weather->pressure = $this->getPressureDifference($data->current_observation->pressure_mb)  . 'mb ' . $data->current_observation->pressure_trend;
         $weather->visibility = $data->current_observation->visibility_mi . ' miles';
