@@ -1,6 +1,6 @@
 <?php
 
-use GeoIp2\Database\Reader;
+use GeoIp2\Database\Reader as Locator;
 use Weat\Config;
 use Weat\Location;
 use Weat\Exception;
@@ -13,17 +13,17 @@ class Weat
     /** @var Config */
     private $config;
 
-    /** @var Reader */
-    private $reader;
+    /** @var Locator */
+    private $locator;
 
     /** @var Twig_Environment */
-    private $twig;
+    private $template;
 
     public function __construct()
     {
         $this->config = new Config();
-        $this->reader = new Reader($this->config->city_db);
-        $this->twig = $this->getTwig($this->config->twig);
+        $this->locator = new Locator($this->config->city_db);
+        $this->template = $this->getTemplate($this->config->twig);
     }
 
     public function run()
@@ -37,7 +37,7 @@ class Weat
 
         $sun = $this->getSunTimes($location, $weather);
 
-        echo $this->twig->render('index.html', array(
+        echo $this->template->render('index.html', array(
             'location' => $location,
             'weather' => $weather,
             'sun' => $sun,
@@ -68,7 +68,7 @@ class Weat
             return $location;
         }
 
-        $record = $this->reader->city($ip);
+        $record = $this->locator->city($ip);
 
         $location->country = $record->country->name;
         $location->city = $record->city->name;
@@ -88,21 +88,24 @@ class Weat
      */
     private function getSunTimes(Location $location, Weather $weather)
     {
+        $sun = new Sun();
+
         // prefer to calculate sun times from location data
         // but fall back on weather data
         $timezone = $location->timezone ? $location->timezone : $weather->timezone;
+
+        if (!$timezone) {
+            return $sun;
+        }
+
         $lat = $location->lat ? $location->lat : $weather->lat;
         $lon = $location->lon ? $location->lon : $weather->lon;
         $epoch = $location->lat ? time() : $weather->epoch;
         $timeString = $location->lat ? 'now' : $weather->timeRfc;
 
-        if (!$timezone) {
-            throw new Exception("could not determine timezone");
-        }
-
-        $dtz = new \DateTimeZone($timezone);
-        $dt = new \DateTime($timeString, $dtz);
-        $offsetInSeconds = $dtz->getOffset($dt);
+        $dateTimeZone= new \DateTimeZone($timezone);
+        $dateTime = new \DateTime($timeString, $dateTimeZone);
+        $offsetInSeconds = $dateTimeZone->getOffset($dateTime);
         $offset = $offsetInSeconds / 60 / 60;
         // sunrise or sunset is defined to occur when the geometric zenith
         // distance of center of the Sun is 90.8333 degrees. That is, the center
@@ -121,10 +124,10 @@ class Weat
         $sunrise = date_sunrise($epoch, SUNFUNCS_RET_STRING, $lat, $lon, $zenith, $offset);
         $sunset = date_sunset($epoch, SUNFUNCS_RET_STRING, $lat, $lon, $zenith, $offset);
 
-        $sun->rise = new \DateTime($sunrise, $dtz);
-        $sun->set = new \DateTime($sunset, $dtz);
+        $sun->rise = new \DateTime($sunrise, $dateTimeZone);
+        $sun->set = new \DateTime($sunset, $dateTimeZone);
 
-        $now = new \DateTime('now', $dtz);
+        $now = new \DateTime('now', $dateTimeZone);
 
         $sun->riseDiff = $now->diff($sun->rise);
         $sun->setDiff = $now->diff($sun->set);
@@ -136,7 +139,7 @@ class Weat
      * @param  array $twigConfig
      * @return Twig_Environment
      */
-    private function getTwig(array $twigConfig)
+    private function getTemplate(array $twigConfig)
     {
         $loader = new Twig_Loader_Filesystem($twigConfig['template_dir']);
         $twig = new Twig_Environment($loader, $twigConfig['options']);
