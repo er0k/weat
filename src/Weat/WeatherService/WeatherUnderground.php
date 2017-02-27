@@ -121,16 +121,16 @@ class WeatherUnderground extends AbstractWeatherService
     private function getQuery(Location $location)
     {
         if (!empty($location->zip)) {
-            return $location->zip . '.json';
+            return sprintf('%s.json', $location->zip);
         }
 
         if (!empty($location->lat) && !empty($location->lon)) {
-            return sprintf("%s,%s.json", $location->lat, $location->lon);
+            return sprintf('%s,%s.json', $location->lat, $location->lon);
         }
 
         if (!empty($location->ip)) {
             if (filter_var($location->ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) ) {
-                return "autoip.json?geo_ip={$ip}";
+                return sprintf('autoip.json?geo_ip=%s', $ip);
             }
         }
 
