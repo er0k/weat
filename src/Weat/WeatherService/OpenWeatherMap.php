@@ -17,13 +17,13 @@ class OpenWeatherMap extends AbstractWeatherService
         $key = $this->getKey();
 
         $query = $this->getQuery($location);
-        
+
         // current conditions
         $url = "http://api.openweathermap.org/data/2.5/weather$query&units=imperial&APPID=$key";
         // forecast
         $url2 = "http://api.openweathermap.org/data/2.5/forecast$query&units=imperial&APPID=$key";
 
-        echo $url . "\n";
+        $this->config->debug($url);
 
         $jsonData = file_get_contents($url);
         if ($jsonData === false) {
@@ -31,12 +31,6 @@ class OpenWeatherMap extends AbstractWeatherService
         }
 
         $data = json_decode($jsonData);
-
-        $cache = $this->getCacheFilename();
-
-        if (!file_put_contents($cache, json_encode($data))) {
-            throw new Exception("could not write open weather map cache file");
-        }
 
         return $data;
     }
