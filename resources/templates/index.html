@@ -13,6 +13,13 @@
         </pre>
         {% endif %}
 
+        <pre id="location">
+{{ location.zip }} {{ location.city }}, {{ location.state }} {{ location.country }}
+{{ location.lat }}, {{location.lon }}
+{{ location.timezone }}
+{{ location.ip }}
+        </pre>
+
         <pre id="weather-data">
 {{ weather.location }}
 {{ weather.timeFriendly }}

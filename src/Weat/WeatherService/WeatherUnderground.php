@@ -50,12 +50,6 @@ class WeatherUnderground extends AbstractWeatherService
             throw new Exception("wunderground API error: " . $data->response->error->description);
         }
 
-        $cache = $this->getCacheFilename();
-
-        if (!file_put_contents($cache, json_encode($data))) {
-            throw new Exception("Could not write wunderground cache file");
-        }
-
         return $data;
     }
 

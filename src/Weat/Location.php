@@ -16,10 +16,10 @@ class Location
     /** @var string */
     public $zip;
 
-    /** @var string */
+    /** @var float */
     public $lat;
 
-    /** @var string */
+    /** @var float */
     public $lon;
 
     /** @var string */

@@ -2,6 +2,7 @@
 
 namespace Weat\WeatherService;
 
+use \stdClass;
 use Weat\Config;
 use Weat\Exception;
 use Weat\Location;
@@ -67,24 +68,32 @@ abstract class AbstractWeatherService
         if (!file_exists($cache) || time() - filemtime($cache) > self::CACHE_TTL) {
             $this->config->debug('getting weather data from API...');
             $data = $this->getWeatherDataFromApi($location);
+            $this->saveDataToCache($data, $cache);
         } else {
             $this->config->debug('getting weather data from cache...');
-            $data = $this->getWeatherDataFromCache();
+            $data = $this->getWeatherDataFromCache($cache);
         }
 
         return $data;
     }
 
     /**
+     * @param  stdClass $data
+     * @param  string $cache
+     */
+    private function saveDataToCache(stdClass $data, $cache)
+    {
+        if (!file_put_contents($cache, json_encode($data))) {
+            throw new Exception('could not save cache file');
+        }
+    }
+
+    /**
      * @param Location $location
      * @return string
      */
-    protected function getCacheFilename(Location $location = null)
+    private function getCacheFilename(Location $location)
     {
-        if ($this->cacheFile) {
-            return $this->cacheFile;
-        }
-
         if (!$location) {
             throw new Exception("cannot get file name without location");
         }
@@ -93,12 +102,15 @@ abstract class AbstractWeatherService
 
         $this->checkPathPermissions($fullpath);
 
-        // use static::class here when I upgrade php :p
-        $serviceName = md5(get_called_class());
+        $serviceName = md5(static::class);
 
         $fullpath .= '/' . $serviceName;
 
         $this->checkPathPermissions($fullpath);
+
+        // remove IP from location before hashing
+        // so IPs in the same location can share cache
+        $location->ip = '';
 
         $filename = md5(json_encode($location));
 
@@ -112,15 +124,14 @@ abstract class AbstractWeatherService
     }
 
     /**
+     * @param $string
      * @return string
      */
-    private function getWeatherDataFromCache()
+    private function getWeatherDataFromCache($cache)
     {
         $serviceName = get_called_class();
 
-        $cache = $this->getCacheFilename();
-
-        if (!$cache) {
+        if (empty($cache)) {
             throw new Exception("could not get {$serviceName} cache data");
         }
 

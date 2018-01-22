@@ -71,10 +71,17 @@ class Weat
 
         if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) ) {
             // if it's a local IP, no need to try and geolocate
-            return $location;
+            $this->config->debug('local IP, using default location');
+            return $this->getDefaultLocation($location);
         }
 
-        $record = $this->locator->city($ip);
+        try {
+            $record = $this->locator->city($ip);
+        } catch (AddressNotFoundException $e) {
+            throw new Exception("Could not geolocate your IP", 1, $e);
+        } catch (InvalidDatabaseException $e) {
+            throw new Exception("Could not read geolocation database", 2, $e);
+        }
 
         $location->country = $record->country->name;
         $location->city = $record->city->name;
@@ -83,6 +90,21 @@ class Weat
         $location->lat = $record->location->latitude;
         $location->lon = $record->location->longitude;
         $location->timezone = $record->location->timeZone;
+
+        return $location;
+    }
+
+    private function getDefaultLocation(Location $location)
+    {
+        $defaultLocation = $this->config->default_location;
+
+        $location->country = $defaultLocation['country'];
+        $location->city = $defaultLocation['city'];
+        $location->state = $defaultLocation['state'];
+        $location->zip = $defaultLocation['zip'];
+        $location->lat = $defaultLocation['lat'];
+        $location->lon = $defaultLocation['lon'];
+        $location->timezone = $defaultLocation['timezone'];
 
         return $location;
     }

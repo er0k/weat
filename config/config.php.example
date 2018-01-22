@@ -14,4 +14,14 @@ return array(
     ),
 
     'show_debug' => false,
+
+    'default_location' => [
+        'country' => 'United States',
+        'city' => 'Philadelphia',
+        'state' => 'Pennsylvania',
+        'zip' => '19129',
+        'lat' => 39.9526294,
+        'lon' => -75.1662118,
+        'timezone' => 'America/New_York',
+    ],
 );
