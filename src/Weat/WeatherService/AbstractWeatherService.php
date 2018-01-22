@@ -10,7 +10,7 @@ use Weat\Weather;
 
 abstract class AbstractWeatherService
 {
-    const CACHE_TTL = 3600; // in seconds
+    const CACHE_TTL = 600; // in seconds
 
     /** @var Config */
     protected $config;
@@ -56,6 +56,55 @@ abstract class AbstractWeatherService
      */
     abstract protected function hydrate(Weather $weather, \stdClass $data);
 
+    /**
+     * @param  int $degrees
+     * @return int
+     */
+    protected function celsiusToFahrenheit($degrees)
+    {
+        return $degrees * (9 / 5) + 32;
+    }
+
+    /**
+     * @param  int $meters
+     * @return int
+     */
+    protected function metersToInches($meters)
+    {
+        return $meters * 39.3701;
+    }
+
+    /**
+     * @param  int $meters
+     * @return int
+     */
+    protected function metersToFeet($meters)
+    {
+        return $meters * 3.28084;
+    }
+
+    /**
+     * @param  int $meters
+     * @return int
+     */
+    protected function metersToMiles($meters)
+    {
+        return $meters * 0.00062137;
+    }
+
+    /**
+     * @link http://snowfence.umn.edu/Components/winddirectionanddegreeswithouttable3.htm
+     * @param  int $degrees
+     * @return string
+     */
+    protected function degressToDirection($degrees)
+    {
+        $val = ($degrees / 22.5) + .5;
+        $directions = ['N','NNE','NE','ENE','E','ESE', 'SE', 'SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
+
+        return $directions[($val % 16)];
+
+    }
 
     /**
      * @param Location $location

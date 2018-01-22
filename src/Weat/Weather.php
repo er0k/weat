@@ -75,4 +75,10 @@ class Weather
 
     /** @var string */
     public $epoch;
+
+    /** @var string */
+    public $elevation;
+
+    /** @var string */
+    public $dewpoint;
 }
