@@ -5,9 +5,10 @@ return array(
     'wunderground_key' => '',
     // https://openweathermap.org/appid
     'open_weather_map_key' => '',
-    // http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
+    // http://dev.maxmind.com/geoip/geoip2/geolite2/
     'city_db' => '/opt/geoip/GeoLite2-City.mmdb',
     'country_db' => '/opt/geoip/GeoLite2-Country.mmdb',
+
     'twig' => array(
         'template_dir' => 'resources/templates',
         'options' => array(),
