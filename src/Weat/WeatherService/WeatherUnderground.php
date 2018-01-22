@@ -18,7 +18,7 @@ class WeatherUnderground extends AbstractWeatherService
     {
         $key = $this->config->wunderground_key;
 
-        $features = array(
+        $features = [
             'alerts',
             'almanac',
             'astronomy',
@@ -27,7 +27,7 @@ class WeatherUnderground extends AbstractWeatherService
             'geolookup',
             'satellite',
             'tide',
-        );
+        ];
 
         $featuresList = implode('/', $features);
 
@@ -65,7 +65,7 @@ class WeatherUnderground extends AbstractWeatherService
         $weather->current = $data->current_observation->weather;
         $weather->currentTemp = $data->current_observation->temp_f . 'F (feels like ' . $data->current_observation->feelslike_f . ')';
         $weather->currentIcon = $data->current_observation->icon_url;
-        $weather->alerts = array();
+        $weather->alerts = [];
         foreach ($data->alerts as $alert) {
             $weather->alerts[] = $alert->message;
         }
@@ -77,21 +77,21 @@ class WeatherUnderground extends AbstractWeatherService
         $weather->moon = $data->moon_phase->phaseofMoon . ' (' . $data->moon_phase->percentIlluminated . '% illuminated)';
         $weather->average = '&uarr;' . $data->almanac->temp_high->normal->F . 'F &darr;' . $data->almanac->temp_low->normal->F . 'F';
         $weather->record = '&uarr;' . $data->almanac->temp_high->record->F . 'F (' . $data->almanac->temp_high->recordyear . ') &darr;' . $data->almanac->temp_low->record->F . 'F (' . $data->almanac->temp_low->recordyear . ')';
-        $weather->forecast = array();
+        $weather->forecast = [];
         foreach ($data->forecast->txt_forecast->forecastday as $day) {
-            $weather->forecast[] = array(
+            $weather->forecast[] = [
                 'day' => $day->title,
                 'icon' => $day->icon_url,
                 'summary' => $day->fcttext,
-            );
+            ];
         }
-        $weather->tides = array();
+        $weather->tides = [];
         foreach ($data->tide->tideSummary as $tide) {
-            $weather->tides[] = array(
+            $weather->tides[] = [
                 'date' => $tide->date->pretty,
                 'type' => $tide->data->type,
                 'height' => $tide->data->height,
-            );
+            ];
         }
         $weather->satellite = $data->satellite->image_url;
 

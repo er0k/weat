@@ -19,16 +19,16 @@ class NOAA extends AbstractWeatherService
         $key = $this->getKey();
 
         $ch = curl_init();
-        $options = array(
+        $options = [
             CURLOPT_URL => sprintf('https://www.ncdc.noaa.gov/cdo-web/api/v2/%s', $endpoint),
-            CURLOPT_HTTPHEADER => array(
+            CURLOPT_HTTPHEADER => [
                 "token:$key"
-            ),
+            ],
             CURLOPT_FAILONERROR => true,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CONNECTTIMEOUT => 5,
             CURLOPT_TIMEOUT => 5,
-        );
+        ];
         curl_setopt_array($ch, $options);
         if (!$response = curl_exec($ch)) {
             $error = curl_error($ch);

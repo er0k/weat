@@ -37,17 +37,17 @@ class Weat
 
         $sun = $this->getSunTimes($location, $weather);
 
-        $debug = array(
+        $debug = [
             'info' => $this->config->getDebugInfo(),
             'show' => $this->config->show_debug,
-        );
+        ];
 
-        echo $this->template->render('index.html', array(
+        echo $this->template->render('index.html', [
             'location' => $location,
             'weather' => $weather,
             'sun' => $sun,
             'debug' => $debug
-        ));
+        ]);
     }
 
     private function getService()
