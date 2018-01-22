@@ -12,4 +12,6 @@ return array(
         'template_dir' => 'resources/templates',
         'options' => array(),
     ),
+
+    'show_debug' => false,
 );
