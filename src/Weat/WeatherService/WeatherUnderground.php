@@ -9,6 +9,8 @@ use Weat\Weather;
 class WeatherUnderground extends AbstractWeatherService
 {
 
+    const URL = "https://api.wunderground.com/api/%s/%s/q/%s";
+
     /**
      * @param Location $location
      * @throws Exception
@@ -33,7 +35,7 @@ class WeatherUnderground extends AbstractWeatherService
 
         $query = $this->getQuery($location);
 
-        $url = "https://api.wunderground.com/api/$key/$featuresList/q/$query";
+        $url = sprintf(self::URL, $key, $featuresList, $query);
 
         $jsonData = file_get_contents($url);
         if ($jsonData === false) {
