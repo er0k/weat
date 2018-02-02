@@ -81,4 +81,7 @@ class Weather
 
     /** @var string */
     public $dewpoint;
+
+    /** @var string */
+    public $clouds;
 }
