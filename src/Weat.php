@@ -27,6 +27,9 @@ class Weat
         $this->template = $template;
     }
 
+    /**
+     * @return string
+     */
     public function run()
     {
         $service = $this->getService();
@@ -43,7 +46,7 @@ class Weat
             'show' => $this->config->show_debug,
         ];
 
-        echo $this->template->render('index.html', [
+        return $this->template->render('index.html', [
             'location' => $location,
             'weather' => $weather,
             'sun' => $sun,

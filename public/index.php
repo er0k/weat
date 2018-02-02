@@ -17,7 +17,7 @@ $template->addExtension(new Twig_Extensions_Extension_Intl());
 $weat = new Weat($config, $locator, $template);
 
 try {
-    $weat->run();
+    echo $weat->run();
 } catch (Weat\Exception $e) {
     echo "<h2>{$e->getMessage()}</h2>";
     if ($config->show_debug) {
