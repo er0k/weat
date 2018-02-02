@@ -46,6 +46,8 @@ class NOAA extends AbstractWeatherService
      */
     protected function hydrate(Weather $weather, \stdClass $data)
     {
+        $this->config->debug(print_r($data, true));
+
         $current = $data->current->properties;
 
         $date = new \DateTime($current->timestamp);
@@ -62,10 +64,13 @@ class NOAA extends AbstractWeatherService
         $weather->visibility = number_format($this->metersToMiles($current->visibility->value), 1) . ' miles';
         $weather->precipitation = number_format((int) $current->precipitationLast6Hours->value, 2) . ' inches';
 
-        $windSpeed = number_format($this->metersToMiles($current->windSpeed->value), 1);
+        // $windSpeed = number_format($this->metersPerSecondToMilesPerHour($current->windSpeed->value), 1);
         $windSpeed = number_format($current->windSpeed->value, 1);
         $windDirection = $this->degreesToDirection($current->windDirection->value);
         $weather->wind = "From the $windDirection at $windSpeed MPH";
+
+        $pressure = $this->pascalToMillibar($current->barometricPressure->value);
+        $weather->pressure = $this->getPressureDifference($pressure) . 'mb';
 
         // var_dump($current);
 

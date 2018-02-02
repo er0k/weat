@@ -93,6 +93,15 @@ abstract class AbstractWeatherService
     }
 
     /**
+     * @param  float $mps
+     * @return float
+     */
+    protected function metersPerSecondToMilesPerHour($mps)
+    {
+        return $mps * 2.2369362942913;
+    }
+
+    /**
      * @link http://snowfence.umn.edu/Components/winddirectionanddegreeswithouttable3.htm
      * @param  int $degrees
      * @return string
@@ -103,7 +112,15 @@ abstract class AbstractWeatherService
         $directions = ['N','NNE','NE','ENE','E','ESE', 'SE', 'SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
 
         return $directions[($val % 16)];
+    }
 
+    /**
+     * @param  float $pascal
+     * @return float
+     */
+    protected function pascalToMillibar($pascal)
+    {
+        return $pascal * 0.01;
     }
 
     /**

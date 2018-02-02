@@ -42,13 +42,19 @@ class OpenWeatherMap extends AbstractWeatherService
      */
     protected function hydrate(Weather $weather, \stdClass $data)
     {
-        #print_r($data);
+        $this->config->debug(print_r($data, true));
 
-        $weather->current = $data->weather[0]->main;
+        $weatherConditions = [];
+        foreach ($data->weather as $condition) {
+            $weatherConditions[] = $condition->description;
+        }
+        $weather->current = implode(', ', $weatherConditions);
         $weather->currentTemp = $data->main->temp;
         $weather->currentIcon = 'https://openweathermap.org/img/w/' . $data->weather[0]->icon . '.png';
         $weather->pressure = $this->getPressureDifference($data->main->pressure) . 'mb';
         $weather->humidity = $data->main->humidity . '%';
+        $weather->visibility = $this->metersToMiles($data->visibility) . ' miles'; // meters?
+        $weather->clouds = $data->clouds->all . '%';
 
         $windSpeed = number_format($data->wind->speed, 1);
         $windDirection = $this->degreesToDirection($data->wind->deg);

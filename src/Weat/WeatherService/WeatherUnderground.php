@@ -64,6 +64,8 @@ class WeatherUnderground extends AbstractWeatherService
      */
     protected function hydrate(Weather $weather, \stdClass $data)
     {
+        // $this->config->debug(print_r($data, true));
+
         $weather->location = $data->current_observation->display_location->full;
         $weather->timeFriendly = $data->current_observation->observation_time;
         $weather->current = $data->current_observation->weather;
