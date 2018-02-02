@@ -37,6 +37,8 @@ class WeatherUnderground extends AbstractWeatherService
 
         $url = sprintf(self::URL, $key, $featuresList, $query);
 
+        $this->config->debug($url);
+
         $jsonData = file_get_contents($url);
         if ($jsonData === false) {
             throw new Exception("couldn't get the wundergroud JSON data. might have exceeded API limits");
