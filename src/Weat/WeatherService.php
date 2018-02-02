@@ -7,7 +7,7 @@ class WeatherService
     const WEATHER_UNDERGROUND = 1;
     const OPEN_WEATHER_MAP = 2;
     const NOAA = 3;
-    const FORECAST_IO = 4;
+    const DARK_SKY = 4;
 
     private $service;
 
@@ -15,7 +15,7 @@ class WeatherService
      * @param Config $config
      * @param int $service
      */
-    public function __construct(Config $config, $service = self::WEATHER_UNDERGROUND)
+    public function __construct(Config $config, $service)
     {
         $this->service = $this->getService($config, $service);
         $config->debug('using weather service: ' . get_class($this->service));
@@ -44,8 +44,8 @@ class WeatherService
                 return new WeatherService\OpenWeatherMap($config);
             case self::NOAA:
                 return new WeatherService\NOAA($config);
-            case self::FORECAST_IO:
-                return new WeatherService\ForecastIO($config);;
+            case self::DARK_SKY:
+                return new WeatherService\DarkSky($config);;
             default:
                 throw new Exception("uknown weather service: {$service}");
         }
