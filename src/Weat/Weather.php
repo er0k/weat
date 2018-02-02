@@ -13,19 +13,31 @@ class Weather
     /** @var string */
     public $timeRfc;
 
-    /** @var string */
+    /**
+     * Human readable current conditions
+     * @var string
+     */
     public $current;
 
-    /** @var string */
+    /**
+     * Degrees in fahrenheit
+     * @var float
+     */
     public $currentTemp;
 
-    /** @var string */
+    /**
+     * URL to image icon
+     * @var string
+     */
     public $currentIcon;
 
-    /** @var string */
+    /** @var array */
     public $alerts;
 
-    /** @var string */
+    /**
+     * Percentage of humidity
+     * @var int
+     */
     public $humidity;
 
     /** @var string */
