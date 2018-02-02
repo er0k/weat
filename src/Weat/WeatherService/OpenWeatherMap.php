@@ -49,7 +49,11 @@ class OpenWeatherMap extends AbstractWeatherService
         $weather->currentIcon = 'https://openweathermap.org/img/w/' . $data->weather[0]->icon . '.png';
         $weather->pressure = $this->getPressureDifference($data->main->pressure) . 'mb';
         $weather->humidity = $data->main->humidity . '%';
-        $weather->wind = $data->wind->speed . 'MPH at ' . $data->wind->deg . ' degrees';
+
+        $windSpeed = number_format($data->wind->speed, 1);
+        $windDirection = $this->degreesToDirection($data->wind->deg);
+        // $weather->wind = $data->wind->speed . 'MPH at ' . $data->wind->deg . ' degrees';
+        $weather->wind = "From the $windDirection at $windSpeed MPH";
 
         return $weather;
     }

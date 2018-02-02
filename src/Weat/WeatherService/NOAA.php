@@ -63,8 +63,11 @@ class NOAA extends AbstractWeatherService
         $weather->precipitation = number_format((int) $current->precipitationLast6Hours->value, 2) . ' inches';
 
         $windSpeed = number_format($this->metersToMiles($current->windSpeed->value), 1);
-        $windDirection = $this->degressToDirection($current->windDirection->value);
+        $windSpeed = number_format($current->windSpeed->value, 1);
+        $windDirection = $this->degreesToDirection($current->windDirection->value);
         $weather->wind = "From the $windDirection at $windSpeed MPH";
+
+        // var_dump($current);
 
         $weather->lat = $data->current->geometry->coordinates[1];
         $weather->lon = $data->current->geometry->coordinates[0];

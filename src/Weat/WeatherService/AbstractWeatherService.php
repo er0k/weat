@@ -97,7 +97,7 @@ abstract class AbstractWeatherService
      * @param  int $degrees
      * @return string
      */
-    protected function degressToDirection($degrees)
+    protected function degreesToDirection($degrees)
     {
         $val = ($degrees / 22.5) + .5;
         $directions = ['N','NNE','NE','ENE','E','ESE', 'SE', 'SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
