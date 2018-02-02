@@ -8,20 +8,23 @@ use Weat\Weather;
 
 class OpenWeatherMap extends AbstractWeatherService
 {
+    const URL = 'http://api.openweathermap.org/data/2.5/weather%s&units=imperial&APPID=%s';
+    const FORECAST_URL = 'http://api.openweathermap.org/data/2.5/forecast%s&units=imperial&APPID=%s';
+
     /**
      * @param  Location $location
      * @return \stdClass
      */
     protected function getWeatherDataFromApi(Location $location)
     {
-        $key = $this->getKey();
+        $key = $this->config->open_weather_map_key;
 
         $query = $this->getQuery($location);
 
         // current conditions
-        $url = "http://api.openweathermap.org/data/2.5/weather$query&units=imperial&APPID=$key";
+        $url = sprintf(self::URL, $query, $key);
         // forecast
-        $url2 = "http://api.openweathermap.org/data/2.5/forecast$query&units=imperial&APPID=$key";
+        $urlForecast = sprintf(self::FORECAST_URL, $query, $key);
 
         $this->config->debug($url);
 
@@ -62,11 +65,6 @@ class OpenWeatherMap extends AbstractWeatherService
         $weather->wind = "From the $windDirection at $windSpeed MPH";
 
         return $weather;
-    }
-
-    private function getKey()
-    {
-        return $this->config->open_weather_map_key;
     }
 
     private function getQuery(Location $location)
