@@ -56,7 +56,7 @@ class Weat
 
     private function getService()
     {
-        $service = isset($_GET['s']) ? $_GET['s'] : WeatherService::WEATHER_UNDERGROUND;
+        $service = $_GET['s'] ?? WeatherService::WEATHER_UNDERGROUND;
 
         return $service;
     }
@@ -67,7 +67,7 @@ class Weat
      */
     private function getLocation()
     {
-        $ip = isset($_GET['ip']) ? $_GET['ip'] : $_SERVER['REMOTE_ADDR'];
+        $ip = $_GET['ip'] ?? $_SERVER['REMOTE_ADDR'];
 
         $location = new Location();
 
