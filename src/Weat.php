@@ -56,7 +56,7 @@ class Weat
 
     private function getService()
     {
-        $service = $_GET['s'] ?? WeatherService::WEATHER_UNDERGROUND;
+        $service = $_GET['s'] ?? WeatherService::NOAA;
 
         return $service;
     }
