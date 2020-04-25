@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
     // https://www.wunderground.com/weather/api
     'wunderground_key' => '',
     // https://openweathermap.org/appid
@@ -9,10 +9,10 @@ return array(
     'city_db' => '/opt/geoip/GeoLite2-City.mmdb',
     'country_db' => '/opt/geoip/GeoLite2-Country.mmdb',
 
-    'twig' => array(
+    'twig' => [
         'template_dir' => 'resources/templates',
-        'options' => array(),
-    ),
+        'options' => [],
+    ],
 
     'show_debug' => false,
 
@@ -25,4 +25,4 @@ return array(
         'lon' => -75.1662118,
         'timezone' => 'America/New_York',
     ],
-);
+];
