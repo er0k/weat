@@ -1,7 +1,6 @@
 <?php
 
 use GeoIp2\Database\Reader as Locator;
-use Twig_Environment as Template;
 use Weat\Config;
 use Weat\Location;
 use Weat\Exception;
@@ -17,14 +16,10 @@ class Weat
     /** @var Locator */
     private $locator;
 
-    /** @var Template */
-    private $template;
-
-    public function __construct(Config $config, Locator $locator, Template $template)
+    public function __construct(Config $config, Locator $locator)
     {
         $this->config = $config;
         $this->locator = $locator;
-        $this->template = $template;
     }
 
     /**
@@ -46,12 +41,17 @@ class Weat
             'show' => $this->config->show_debug,
         ];
 
-        return $this->template->render('index.html', [
+        $output = [
             'location' => $location,
             'weather' => $weather,
             'sun' => $sun,
-            'debug' => $debug
-        ]);
+        ];
+
+        if ($this->config->show_debug) {
+            $output['debug'] = $debug;
+        }
+
+        return json_encode($output);
     }
 
     private function getService()

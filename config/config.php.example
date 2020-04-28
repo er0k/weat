@@ -9,11 +9,6 @@ return [
     'city_db' => '/opt/geoip/GeoLite2-City.mmdb',
     'country_db' => '/opt/geoip/GeoLite2-Country.mmdb',
 
-    'twig' => [
-        'template_dir' => 'resources/templates',
-        'options' => [],
-    ],
-
     'show_debug' => false,
 
     'default_location' => [
