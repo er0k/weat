@@ -10,7 +10,7 @@ use Weat\Weather;
 
 abstract class AbstractWeatherService
 {
-    const CACHE_TTL = 600; // in seconds
+    const CACHE_TTL_SECONDS = 600;
 
     /** @var Config */
     protected $config;
@@ -131,7 +131,7 @@ abstract class AbstractWeatherService
     {
         $cache = $this->getCacheFilename($location);
 
-        if (!file_exists($cache) || time() - filemtime($cache) > self::CACHE_TTL) {
+        if (!file_exists($cache) || time() - filemtime($cache) > self::CACHE_TTL_SECONDS) {
             $this->config->debug('getting weather data from API...');
             $data = $this->getWeatherDataFromApi($location);
             $this->saveDataToCache($data, $cache);
@@ -176,9 +176,12 @@ abstract class AbstractWeatherService
 
         // remove IP from location before hashing
         // so IPs in the same location can share cache
+        $ip = $location->ip;
         $location->ip = '';
 
         $filename = md5(json_encode($location));
+
+        $location->ip = $ip;
 
         $fullpath .= '/' . $filename;
 

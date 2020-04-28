@@ -34,10 +34,10 @@ class Weat
     {
         $service = $this->getService();
 
-        $location = $this->getLocation();
+        $location = $this->getLocationFromIP();
 
-        $wg = new WeatherService($this->config, $service);
-        $weather = $wg->getWeather($location);
+        $weather = (new WeatherService($this->config, $this->getService()))
+            ->getWeather($location);
 
         $sun = $this->getSunTimes($location, $weather);
 
@@ -56,7 +56,7 @@ class Weat
 
     private function getService()
     {
-        $service = $_GET['s'] ?? WeatherService::NOAA;
+        $service = $_GET['s'] ?? WeatherService::TYPES['NOAA'];
 
         return $service;
     }
@@ -65,18 +65,14 @@ class Weat
      * @return Location
      * @throws Exception
      */
-    private function getLocation()
+    private function getLocationFromIP()
     {
-        $ip = $_GET['ip'] ?? $_SERVER['REMOTE_ADDR'];
-
-        $location = new Location();
-
-        $location->ip = $ip;
+        $ip = $_GET['ip'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'];
 
         if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) ) {
             // if it's a local IP, no need to try and geolocate
             $this->config->debug('local IP, using default location');
-            return $this->getDefaultLocation($location);
+            return $this->getDefaultLocation();
         }
 
         try {
@@ -87,6 +83,8 @@ class Weat
             throw new Exception("Could not read geolocation database", 2, $e);
         }
 
+        $location = new Location();
+        $location->ip = $ip;
         $location->country = $record->country->name;
         $location->city = $record->city->name;
         $location->state = $record->mostSpecificSubdivision->name;
@@ -95,13 +93,16 @@ class Weat
         $location->lon = $record->location->longitude;
         $location->timezone = $record->location->timeZone;
 
+        $this->config->debug(print_r($location, true));
+
         return $location;
     }
 
-    private function getDefaultLocation(Location $location)
+    private function getDefaultLocation()
     {
         $defaultLocation = $this->config->default_location;
 
+        $location = new Location();
         $location->country = $defaultLocation['country'];
         $location->city = $defaultLocation['city'];
         $location->state = $defaultLocation['state'];

@@ -4,10 +4,12 @@ namespace Weat;
 
 class WeatherService
 {
-    const WEATHER_UNDERGROUND = 1;
-    const OPEN_WEATHER_MAP = 2;
-    const NOAA = 3;
-    const DARK_SKY = 4;
+    const TYPES = [
+        'WEATHER_UNDERGROUND' => 1,
+        'OPEN_WEATHER_MAP' => 2,
+        'NOAA' => 3,
+        'DARK_SKY' => 4,
+    ];
 
     private $service;
 
@@ -38,13 +40,13 @@ class WeatherService
     private function getService(Config $config, $service)
     {
         switch ($service) {
-            case self::WEATHER_UNDERGROUND:
+            case self::TYPES['WEATHER_UNDERGROUND']:
                 return new WeatherService\WeatherUnderground($config);
-            case self::OPEN_WEATHER_MAP:
+            case self::TYPES['OPEN_WEATHER_MAP']:
                 return new WeatherService\OpenWeatherMap($config);
-            case self::NOAA:
+            case self::TYPES['NOAA']:
                 return new WeatherService\NOAA($config);
-            case self::DARK_SKY:
+            case self::TYPES['DARK_SKY']:
                 return new WeatherService\DarkSky($config);;
             default:
                 throw new Exception("uknown weather service: {$service}");
