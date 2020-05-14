@@ -8,6 +8,49 @@
 </head>
 <body>
 
+<div id="service">
+    <ul>
+        <li><a href="w.php?s=3">NOAA</a></li>
+        <li><a href="w.php?s=2">Open Weather Map</a></li>
+    </ul>
+</div>
+
+<div id="weather">
+    <h1 id="currentTemp">57.0F</h1>
+    <h2 id="current">Mostly Cloudy</h2>
+    <img src="https://api.weather.gov/icons/land/day/bkn?size=medium">
+
+    <dl>
+        <dt>wind</dt>
+        <dd id="wind">From the W at 7.2 MPH</dd>
+
+        <dt>humidity</dt>
+        <dd id="humidity">29%</dd>
+
+        <dt>pressure</dt>
+        <dd id="pressure">4.75mb</dd>
+
+        <dt>visibility</dt>
+        <dd id="visibility">10.0 miles</dd>
+
+        <dt>precipitation</dt>
+        <dd id="precipitation">0.00 inches</dd>
+    </dl>
+</div>
 
 </body>
+
+<script>
+
+const getWeather = async serviceNum => {
+    let weatherResp = await fetch("w.php?" + serviceNum);
+    let contents = await hashResp.text();
+    return contents;
+}
+
+let weather = getWeather(2);
+console.log(weather);
+
+</script>
+
 </html>
