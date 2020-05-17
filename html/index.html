@@ -8,12 +8,7 @@
 </head>
 <body>
 
-<div id="service">
-    <ul>
-        <li><a href="w.php?s=3">NOAA</a></li>
-        <li><a href="w.php?s=2">Open Weather Map</a></li>
-    </ul>
-</div>
+<div id="services"></div>
 
 <div id="weather">
     <h1 id="currentTemp">57.0F</h1>
@@ -42,14 +37,28 @@
 
 <script>
 
-const getWeather = async serviceNum => {
-    let weatherResp = await fetch("w.php?" + serviceNum);
-    let contents = await hashResp.text();
-    return contents;
+const services = [
+    { id: 2, name: "Open Weather Map" },
+    { id: 3, name: "NOAA" }
+];
+
+const showServices = _=> {
+    let list = "<ul>\n";
+    services.map(service => list += `\t<li><a href="w.php?s=${service.id}">${service.name}</a></li>\n`);
+    list += "</ul>\n";
+    let servicesDiv = document.getElementById("services")
+    servicesDiv.innerHTML = list;
 }
 
-let weather = getWeather(2);
-console.log(weather);
+showServices();
+
+const getWeather = async serviceNum => {
+    let weatherResp = await fetch("w.php?" + serviceNum);
+    console.log(weatherResp);
+    let contents = await weatherResp.json();
+    console.log(contents);
+    return contents;
+}
 
 </script>
 
