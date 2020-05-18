@@ -10,26 +10,21 @@
 
 <div id="services"></div>
 
+<div id="place">
+    <span id="city"></span>, <span id="state"></span>, <span id="country"></span>
+</div>
+
 <div id="weather">
-    <h1 id="currentTemp">57.0F</h1>
-    <h2 id="current">Mostly Cloudy</h2>
-    <img src="https://api.weather.gov/icons/land/day/bkn?size=medium">
+    <h1 id="currentTemp"></h1>
+    <h2 id="current"></h2>
+    <img id="currentIcon" src="">
 
     <dl>
-        <dt>wind</dt>
-        <dd id="wind">From the W at 7.2 MPH</dd>
-
-        <dt>humidity</dt>
-        <dd id="humidity">29%</dd>
-
-        <dt>pressure</dt>
-        <dd id="pressure">4.75mb</dd>
-
-        <dt>visibility</dt>
-        <dd id="visibility">10.0 miles</dd>
-
-        <dt>precipitation</dt>
-        <dd id="precipitation">0.00 inches</dd>
+        <dt>wind</dt><dd id="wind"></dd>
+        <dt>humidity</dt><dd id="humidity"></dd>
+        <dt>pressure</dt><dd id="pressure"></dd>
+        <dt>visibility</dt><dd id="visibility"></dd>
+        <dt>precipitation</dt><dd id="precipitation"></dd>
     </dl>
 </div>
 
@@ -39,25 +34,51 @@
 
 const services = [
     { id: 2, name: "Open Weather Map" },
-    { id: 3, name: "NOAA" }
+    { id: 3, name: "NOAA" },
 ];
 
 const showServices = _=> {
-    let list = "<ul>\n";
-    services.map(service => list += `\t<li><a href="w.php?s=${service.id}">${service.name}</a></li>\n`);
-    list += "</ul>\n";
+    let list = "<ul>";
+    services.map(service => list += `<li><a href="#${service.name}" onclick="showWeather(${service.id});">${service.name}</a></li>`);
+    list += "</ul>";
     let servicesDiv = document.getElementById("services")
     servicesDiv.innerHTML = list;
 }
 
 showServices();
 
-const getWeather = async serviceNum => {
-    let weatherResp = await fetch("w.php?" + serviceNum);
-    console.log(weatherResp);
+const getWeather = async serviceId => {
+    let weatherResp = await fetch("w.php?s=" + serviceId);
     let contents = await weatherResp.json();
-    console.log(contents);
     return contents;
+}
+
+const showWeather = async serviceId => {
+    let data = await getWeather(serviceId);
+    console.log(serviceId, data);
+
+    for (let item in data.location) {
+
+        if (document.getElementById(item)) {
+            console.log(item, data.location[item]);
+            document.getElementById(item).textContent = data.location[item];
+        }
+    }
+
+    for (let item in data.weather) {
+        if (document.getElementById(item)) {
+            if (item == "currentIcon") {
+                document.getElementById(item).src = data.weather[item];
+            } else {
+                document.getElementById(item).textContent = data.weather[item];
+            }
+        }
+    }
+}
+
+if (window.location.hash) {
+    let presetService = services.find(service => service.name === decodeURI(window.location.hash).substr(1));
+    showWeather(presetService.id);
 }
 
 </script>
