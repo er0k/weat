@@ -6,6 +6,7 @@ docker build -t weat . && \
     -p 6666:80 \
     -v /opt/geoip:/opt/geoip \
     -v /home/er0k/dev/weat:/var/www \
+    --restart unless-stopped \
     weat && \
 docker start weat && \
 docker logs -f weat
