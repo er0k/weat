@@ -2,17 +2,16 @@
 
 namespace Weat;
 
+use DateTime;
+use DateInterval;
+
 class Sun
 {
-    /** @var \DateTime */
-    public $rise;
+    public DateTime $rise;
 
-    /** @var \DateTime */
-    public $set;
+    public DateTime $set;
 
-    /** @var \DateInterval */
-    public $riseDiff;
+    public DateInterval $riseDiff;
 
-    /** @var \DateInterval */
-    public $setDiff;
+    public DateInterval $setDiff;
 }

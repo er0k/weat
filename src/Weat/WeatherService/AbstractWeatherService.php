@@ -12,25 +12,16 @@ abstract class AbstractWeatherService
 {
     const CACHE_TTL_SECONDS = 600;
 
-    /** @var Config */
-    protected $config;
+    protected Config $config;
 
-    /** @var string */
-    protected $cacheFile;
+    protected string $cacheFile;
 
-    /**
-     * @param Config $config
-     */
     public function __construct(Config $config)
     {
         $this->config = $config;
     }
 
-    /**
-     * @param  Location $location
-     * @return Weather
-     */
-    public function getWeather(Location $location)
+    public function getWeather(Location $location): Weather
     {
         if (!$location) {
             throw new Exception("cannot get weather without location");
@@ -43,70 +34,47 @@ abstract class AbstractWeatherService
         return $this->hydrate($weather, $data);
     }
 
-    /**
-     * @param Location $location
-     * @return \stdClass
-     */
-    abstract protected function getWeatherDataFromApi(Location $location);
+    abstract protected function getWeatherDataFromApi(Location $location): stdClass;
 
     /**
      * @param  Weather $weather
      * @param  \stdClass $data
      * @return Weather
      */
-    abstract protected function hydrate(Weather $weather, \stdClass $data);
+    abstract protected function hydrate(Weather $weather, \stdClass $data): Weather;
 
     /**
-     * @param  int $degrees
-     * @return int
+     * @param  int|string $degrees
      */
-    protected function celsiusToFahrenheit($degrees)
+    protected function celsiusToFahrenheit($degrees): int
     {
         return $degrees * (9 / 5) + 32;
     }
 
-    /**
-     * @param  int $meters
-     * @return int
-     */
-    protected function metersToInches($meters)
+    protected function metersToInches(int $meters): int
     {
         return $meters * 39.3701;
     }
 
-    /**
-     * @param  int $meters
-     * @return int
-     */
-    protected function metersToFeet($meters)
+    protected function metersToFeet(int $meters): int
     {
         return $meters * 3.28084;
     }
 
-    /**
-     * @param  int $meters
-     * @return int
-     */
-    protected function metersToMiles($meters)
+    protected function metersToMiles(int $meters): int
     {
         return $meters * 0.00062137;
     }
 
-    /**
-     * @param  float $mps
-     * @return float
-     */
-    protected function metersPerSecondToMilesPerHour($mps)
+    protected function metersPerSecondToMilesPerHour(float $mps): float
     {
         return $mps * 2.2369362942913;
     }
 
     /**
      * @link http://snowfence.umn.edu/Components/winddirectionanddegreeswithouttable3.htm
-     * @param  int $degrees
-     * @return string
      */
-    protected function degreesToDirection($degrees)
+    protected function degreesToDirection(int $degrees): string
     {
         $val = ($degrees / 22.5) + .5;
         $directions = ['N','NNE','NE','ENE','E','ESE', 'SE', 'SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
@@ -114,20 +82,12 @@ abstract class AbstractWeatherService
         return $directions[($val % 16)];
     }
 
-    /**
-     * @param  float $pascal
-     * @return float
-     */
-    protected function pascalToMillibar($pascal)
+    protected function pascalToMillibar(float $pascal): float
     {
         return $pascal * 0.01;
     }
 
-    /**
-     * @param Location $location
-     * @return \stdClass
-     */
-    private function getWeatherData(Location $location)
+    private function getWeatherData(Location $location): stdClass
     {
         $cache = $this->getCacheFilename($location);
 
@@ -143,22 +103,14 @@ abstract class AbstractWeatherService
         return $data;
     }
 
-    /**
-     * @param  stdClass $data
-     * @param  string $cache
-     */
-    private function saveDataToCache(stdClass $data, $cache)
+    private function saveDataToCache(stdClass $data, string $cache): void
     {
         if (!file_put_contents($cache, json_encode($data))) {
             throw new Exception('could not save cache file');
         }
     }
 
-    /**
-     * @param Location $location
-     * @return string
-     */
-    private function getCacheFilename(Location $location)
+    private function getCacheFilename(Location $location): string
     {
         if (!$location) {
             throw new Exception("cannot get file name without location");
@@ -192,11 +144,7 @@ abstract class AbstractWeatherService
         return $this->cacheFile;
     }
 
-    /**
-     * @param $string
-     * @return string
-     */
-    private function getWeatherDataFromCache($cache)
+    private function getWeatherDataFromCache(string $cache): stdClass
     {
         $serviceName = get_called_class();
 
@@ -207,11 +155,7 @@ abstract class AbstractWeatherService
         return json_decode(file_get_contents($cache));
     }
 
-    /**
-     * @param  int $currentPressure
-     * @return int
-     */
-    protected function getPressureDifference($currentPressure)
+    protected function getPressureDifference(int $currentPressure): int
     {
         // millibars at sea level
         $standardPressure = 1013.25;
@@ -219,7 +163,7 @@ abstract class AbstractWeatherService
         return $currentPressure - $standardPressure;
     }
 
-    private function getTempdir()
+    private function getTempdir(): string
     {
         $tmpDir = sys_get_temp_dir() . '/weat';
         $this->config->debug("temp dir: $tmpDir");
@@ -227,10 +171,7 @@ abstract class AbstractWeatherService
         return $tmpDir;
     }
 
-    /**
-     * @param  string $path
-     */
-    private function checkPathPermissions($path)
+    private function checkPathPermissions(string $path): void
     {
         if (!file_exists($path)) {
             if (!mkdir($path, 0775)) {

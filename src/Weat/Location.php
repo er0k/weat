@@ -4,27 +4,19 @@ namespace Weat;
 
 class Location
 {
-    /** @var string */
-    public $city;
+    public string $city;
 
-    /** @var string */
-    public $state;
+    public string $state;
 
-    /** @var string */
-    public $country;
+    public string $country;
 
-    /** @var string */
-    public $zip;
+    public string $zip;
 
-    /** @var float */
-    public $lat;
+    public float $lat;
 
-    /** @var float */
-    public $lon;
+    public float $lon;
 
-    /** @var string */
-    public $ip;
+    public string $ip;
 
-    /** @var string */
-    public $timezone;
+    public string $timezone;
 }

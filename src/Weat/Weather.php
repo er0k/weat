@@ -4,96 +4,62 @@ namespace Weat;
 
 class Weather
 {
-    /** @var string */
-    public $location;
+    public string $location;
 
-    /** @var string */
-    public $timeFriendly;
+    public string $timeFriendly;
 
-    /** @var string */
-    public $timeRfc;
+    public string $timeRfc;
 
-    /**
-     * Human readable current conditions
-     * @var string
-     */
-    public $current;
+    // Human readable current conditions
+    public string $current;
 
-    /**
-     * Degrees in fahrenheit
-     * @var float
-     */
-    public $currentTemp;
+    // Degrees in fahrenheit
+    public float $currentTemp;
 
-    /**
-     * URL to image icon
-     * @var string
-     */
-    public $currentIcon;
+    // URL to image icon
+    public string $currentIcon;
 
     /** @var array */
     public $alerts;
 
-    /**
-     * Percentage of humidity
-     * @var int
-     */
-    public $humidity;
+    // Percentage of humidity
+    public int $humidity;
 
-    /** @var string */
-    public $wind;
+    public string $wind;
 
-    /** @var string */
-    public $pressure;
+    public string $pressure;
 
-    /** @var string */
-    public $visibility;
+    public string $visibility;
 
-    /** @var string */
-    public $precipitation;
+    public string $precipitation;
 
-    /** @var string */
-    public $moon;
+    public string $moon;
 
-    /** @var string */
-    public $sunrise;
+    public string $sunrise;
 
-    /** @var string */
-    public $sunset;
+    public string $sunset;
 
-    /** @var string */
-    public $average;
+    public string $average;
 
-    /** @var string */
-    public $record;
+    public string $record;
 
-    /** @var string */
-    public $forecast;
+    public string $forecast;
 
-    /** @var string */
-    public $tides;
+    public string $tides;
 
-    /** @var string */
-    public $satellite;
+    public string $satellite;
 
-    /** @var string */
-    public $timezone;
+    public string $timezone;
 
-    /** @var string */
-    public $lat;
+    public string $lat;
 
-    /** @var string */
-    public $lon;
+    public string $lon;
 
-    /** @var string */
-    public $epoch;
+    public string $epoch;
 
-    /** @var string */
-    public $elevation;
+    public string $elevation;
 
-    /** @var string */
-    public $dewpoint;
+    public ?string $dewpoint;
 
-    /** @var string */
-    public $clouds;
+    public string $clouds;
 }

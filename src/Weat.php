@@ -10,11 +10,9 @@ use Weat\WeatherService;
 
 class Weat
 {
-    /** @var Config */
-    private $config;
+    private Config $config;
 
-    /** @var Locator */
-    private $locator;
+    private Locator $locator;
 
     public function __construct(Config $config, Locator $locator)
     {
@@ -22,10 +20,7 @@ class Weat
         $this->locator = $locator;
     }
 
-    /**
-     * @return string
-     */
-    public function run()
+    public function run(): string
     {
         $service = $this->getService();
 
@@ -54,7 +49,7 @@ class Weat
         return json_encode($output);
     }
 
-    private function getService()
+    private function getService(): int
     {
         $service = $_GET['s'] ?? WeatherService::TYPES['NOAA'];
 
@@ -62,10 +57,9 @@ class Weat
     }
 
     /**
-     * @return Location
      * @throws Exception
      */
-    private function getLocationFromIP()
+    private function getLocationFromIP(): Location
     {
         $ip = $_GET['ip'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'];
 
@@ -98,11 +92,12 @@ class Weat
         return $location;
     }
 
-    private function getDefaultLocation()
+    private function getDefaultLocation(): Location
     {
         $defaultLocation = $this->config->default_location;
 
         $location = new Location();
+        $location->ip = '127.0.0.1';
         $location->country = $defaultLocation['country'];
         $location->city = $defaultLocation['city'];
         $location->state = $defaultLocation['state'];
@@ -114,12 +109,7 @@ class Weat
         return $location;
     }
 
-    /**
-     * @param  Location $location
-     * @param  Weather $weather
-     * @return Sun
-     */
-    private function getSunTimes(Location $location, Weather $weather)
+    private function getSunTimes(Location $location, Weather $weather): Sun
     {
         $sun = new Sun();
 

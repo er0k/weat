@@ -2,6 +2,8 @@
 
 namespace Weat;
 
+use Weat\WeatherService\AbstractWeatherService;
+
 class WeatherService
 {
     const TYPES = [
@@ -13,31 +15,18 @@ class WeatherService
 
     private $service;
 
-    /**
-     * @param Config $config
-     * @param int $service
-     */
-    public function __construct(Config $config, $service)
+    public function __construct(Config $config, int $service)
     {
         $this->service = $this->getService($config, $service);
         $config->debug('using weather service: ' . get_class($this->service));
     }
 
-    /**
-     * @param  Location $location
-     * @return Weather
-     */
-    public function getWeather(Location $location)
+    public function getWeather(Location $location): Weather
     {
         return $this->service->getWeather($location);
     }
 
-    /**
-     * @param  Config $config
-     * @param  int $service
-     * @return AbstractWeatherService
-     */
-    private function getService(Config $config, $service)
+    private function getService(Config $config, int $service): AbstractWeatherService
     {
         switch ($service) {
             case self::TYPES['WEATHER_UNDERGROUND']:

@@ -2,6 +2,7 @@
 
 namespace Weat\WeatherService;
 
+use \stdClass;
 use Weat\Exception;
 use Weat\Location;
 use Weat\Weather;
@@ -11,11 +12,7 @@ class OpenWeatherMap extends AbstractWeatherService
     const URL = 'http://api.openweathermap.org/data/2.5/weather%s&units=imperial&APPID=%s';
     const FORECAST_URL = 'http://api.openweathermap.org/data/2.5/forecast%s&units=imperial&APPID=%s';
 
-    /**
-     * @param  Location $location
-     * @return \stdClass
-     */
-    protected function getWeatherDataFromApi(Location $location)
+    protected function getWeatherDataFromApi(Location $location): stdClass
     {
         $key = $this->config->open_weather_map_key;
 
@@ -38,12 +35,7 @@ class OpenWeatherMap extends AbstractWeatherService
         return $data;
     }
 
-    /**
-     * @param  Weather $weather
-     * @param  \stdClass $data
-     * @return Weather
-     */
-    protected function hydrate(Weather $weather, \stdClass $data)
+    protected function hydrate(Weather $weather, \stdClass $data): Weather
     {
         $this->config->debug(print_r($data, true));
 

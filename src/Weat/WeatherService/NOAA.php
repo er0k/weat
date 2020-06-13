@@ -2,6 +2,7 @@
 
 namespace Weat\WeatherService;
 
+use \stdClass;
 use Weat\Exception;
 use Weat\Location;
 use Weat\Weather;
@@ -18,7 +19,7 @@ class NOAA extends AbstractWeatherService
      * @throws Exception
      * @return \stdClass
      */
-    protected function getWeatherDataFromApi(Location $location)
+    protected function getWeatherDataFromApi(Location $location): stdClass
     {
 
         $urlMeta = sprintf(self::META_URL, $location->lat, $location->lon);
@@ -39,12 +40,7 @@ class NOAA extends AbstractWeatherService
 
     }
 
-    /**
-     * @param  Weather $weather
-     * @param  \stdClass $data
-     * @return Weather
-     */
-    protected function hydrate(Weather $weather, \stdClass $data)
+    protected function hydrate(Weather $weather, stdClass $data): Weather
     {
         $this->config->debug(print_r($data, true));
 
@@ -111,11 +107,9 @@ class NOAA extends AbstractWeatherService
     }
 
     /**
-     * @param  string $url
      * @throws Exception
-     * @return \stdClass
      */
-    private function request($url)
+    private function request(string $url): stdClass
     {
         $this->config->debug($url);
         $ch = curl_init();

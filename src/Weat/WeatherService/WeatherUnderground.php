@@ -2,6 +2,7 @@
 
 namespace Weat\WeatherService;
 
+use \stdClass;
 use Weat\Exception;
 use Weat\Location;
 use Weat\Weather;
@@ -11,12 +12,7 @@ class WeatherUnderground extends AbstractWeatherService
 
     const URL = "https://api.wunderground.com/api/%s/%s/q/%s";
 
-    /**
-     * @param Location $location
-     * @throws Exception
-     * @return \stdClass
-     */
-    protected function getWeatherDataFromApi(Location $location)
+    protected function getWeatherDataFromApi(Location $location): stdClass
     {
         $key = $this->config->wunderground_key;
 
@@ -57,12 +53,7 @@ class WeatherUnderground extends AbstractWeatherService
         return $data;
     }
 
-    /**
-     * @param  Weather $weather
-     * @param  \stdClass $data
-     * @return Weather
-     */
-    protected function hydrate(Weather $weather, \stdClass $data)
+    protected function hydrate(Weather $weather, stdClass $data): Weather
     {
         // $this->config->debug(print_r($data, true));
 
@@ -114,11 +105,9 @@ class WeatherUnderground extends AbstractWeatherService
     }
 
     /**
-     * @param Location $location
-     * @return string
      * @link https://www.wunderground.com/weather/api/d/docs?d=data/index
      */
-    private function getQuery(Location $location)
+    private function getQuery(Location $location): string
     {
         if (!empty($location->zip)) {
             return sprintf('%s.json', $location->zip);
