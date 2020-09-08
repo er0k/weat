@@ -155,7 +155,7 @@ abstract class AbstractWeatherService
         return json_decode(file_get_contents($cache));
     }
 
-    protected function getPressureDifference(int $currentPressure): int
+    protected function getPressureDifference(int $currentPressure): float
     {
         // millibars at sea level
         $standardPressure = 1013.25;

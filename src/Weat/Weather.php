@@ -27,7 +27,7 @@ class Weather
 
     public string $wind;
 
-    public string $pressure;
+    public float $pressure;
 
     public string $visibility;
 

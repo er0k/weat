@@ -46,8 +46,8 @@ class OpenWeatherMap extends AbstractWeatherService
         $weather->current = implode(', ', $weatherConditions);
         $weather->currentTemp = $data->main->temp;
         $weather->currentIcon = 'https://openweathermap.org/img/w/' . $data->weather[0]->icon . '.png';
-        $weather->pressure = $this->getPressureDifference($data->main->pressure) . 'mb';
-        $weather->humidity = $data->main->humidity . '%';
+        $weather->pressure = $this->getPressureDifference($data->main->pressure);
+        $weather->humidity = $data->main->humidity;
         $weather->visibility = $this->metersToMiles($data->visibility) . ' miles'; // meters?
         $weather->clouds = $data->clouds->all . '%';
 
