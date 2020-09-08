@@ -18,7 +18,6 @@ class WeatherService
     public function __construct(Config $config, int $service)
     {
         $this->service = $this->getService($config, $service);
-        $config->debug('using weather service: ' . get_class($this->service));
     }
 
     public function getWeather(Location $location): Weather

@@ -31,20 +31,11 @@ class Weat
 
         $sun = $this->getSunTimes($location, $weather);
 
-        $debug = [
-            'info' => $this->config->getDebugInfo(),
-            'show' => $this->config->show_debug,
-        ];
-
         $output = [
             'location' => $location,
             'weather' => $weather,
             'sun' => $sun,
         ];
-
-        if ($this->config->show_debug) {
-            $output['debug'] = $debug;
-        }
 
         return json_encode($output);
     }
@@ -65,7 +56,6 @@ class Weat
 
         if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) ) {
             // if it's a local IP, no need to try and geolocate
-            $this->config->debug('local IP, using default location');
             return $this->getDefaultLocation();
         }
 
@@ -86,8 +76,6 @@ class Weat
         $location->lat = $record->location->latitude;
         $location->lon = $record->location->longitude;
         $location->timezone = $record->location->timeZone;
-
-        $this->config->debug(print_r($location, true));
 
         return $location;
     }

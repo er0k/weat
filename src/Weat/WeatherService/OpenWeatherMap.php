@@ -23,8 +23,6 @@ class OpenWeatherMap extends AbstractWeatherService
         // forecast
         $urlForecast = sprintf(self::FORECAST_URL, $query, $key);
 
-        $this->config->debug($url);
-
         $jsonData = file_get_contents($url);
         if ($jsonData === false) {
             throw new Exception("could not get open weather map API data");
@@ -37,8 +35,6 @@ class OpenWeatherMap extends AbstractWeatherService
 
     protected function hydrate(Weather $weather, \stdClass $data): Weather
     {
-        $this->config->debug(print_r($data, true));
-
         $weatherConditions = [];
         foreach ($data->weather as $condition) {
             $weatherConditions[] = $condition->description;

@@ -92,11 +92,9 @@ abstract class AbstractWeatherService
         $cache = $this->getCacheFilename($location);
 
         if (!file_exists($cache) || time() - filemtime($cache) > self::CACHE_TTL_SECONDS) {
-            $this->config->debug('getting weather data from API...');
             $data = $this->getWeatherDataFromApi($location);
             $this->saveDataToCache($data, $cache);
         } else {
-            $this->config->debug('getting weather data from cache...');
             $data = $this->getWeatherDataFromCache($cache);
         }
 
@@ -139,8 +137,6 @@ abstract class AbstractWeatherService
 
         $this->cacheFile = $fullpath;
 
-        $this->config->debug("cache file: $fullpath");
-
         return $this->cacheFile;
     }
 
@@ -166,7 +162,6 @@ abstract class AbstractWeatherService
     private function getTempdir(): string
     {
         $tmpDir = sys_get_temp_dir() . '/weat';
-        $this->config->debug("temp dir: $tmpDir");
 
         return $tmpDir;
     }

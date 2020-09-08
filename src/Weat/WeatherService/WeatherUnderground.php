@@ -33,8 +33,6 @@ class WeatherUnderground extends AbstractWeatherService
 
         $url = sprintf(self::URL, $key, $featuresList, $query);
 
-        $this->config->debug($url);
-
         $jsonData = file_get_contents($url);
         if ($jsonData === false) {
             throw new Exception("couldn't get the wundergroud JSON data. might have exceeded API limits");
@@ -55,8 +53,6 @@ class WeatherUnderground extends AbstractWeatherService
 
     protected function hydrate(Weather $weather, stdClass $data): Weather
     {
-        // $this->config->debug(print_r($data, true));
-
         $weather->location = $data->current_observation->display_location->full;
         $weather->timeFriendly = $data->current_observation->observation_time;
         $weather->current = $data->current_observation->weather;

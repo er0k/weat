@@ -11,7 +11,4 @@ try {
     echo $weat->run();
 } catch (Weat\Exception $e) {
     echo "<h2>{$e->getMessage()}</h2>";
-    if ($config->show_debug) {
-        echo "<pre>$e</pre>";
-    }
 }

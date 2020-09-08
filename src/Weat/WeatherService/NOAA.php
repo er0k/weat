@@ -42,8 +42,6 @@ class NOAA extends AbstractWeatherService
 
     protected function hydrate(Weather $weather, stdClass $data): Weather
     {
-        $this->config->debug(print_r($data, true));
-
         $current = $data->current->properties;
 
         $date = new \DateTime($current->timestamp);
@@ -111,7 +109,6 @@ class NOAA extends AbstractWeatherService
      */
     private function request(string $url): stdClass
     {
-        $this->config->debug($url);
         $ch = curl_init();
         $options = [
             CURLOPT_URL => $url,

@@ -9,8 +9,6 @@ return [
     'city_db' => '/opt/geoip/GeoLite2-City.mmdb',
     'country_db' => '/opt/geoip/GeoLite2-Country.mmdb',
 
-    'show_debug' => false,
-
     'default_location' => [
         'country' => 'United States',
         'city' => 'Philadelphia',
