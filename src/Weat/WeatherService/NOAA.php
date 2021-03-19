@@ -63,7 +63,7 @@ class NOAA extends AbstractWeatherService
         $windDirection = $this->degreesToDirection((int) $current->windDirection->value);
         $weather->wind = "From the $windDirection at $windSpeed MPH";
 
-        $pressure = $this->pascalToMillibar($current->barometricPressure->value);
+        $pressure = $this->pascalToMillibar(floatval($current->barometricPressure->value));
         $weather->pressure = $this->getPressureDifference($pressure);
 
         // var_dump($current);
