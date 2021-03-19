@@ -1,5 +1,5 @@
 const services = [
-    { id: 2, name: "Open Weather Map" },
+    { id: 2, name: "OpenWeatherMap" },
     { id: 3, name: "NOAA" },
 ];
 
