@@ -91,11 +91,15 @@ abstract class AbstractWeatherService
     {
         $cache = $this->getCacheFilename($location);
 
-        if (!file_exists($cache) || time() - filemtime($cache) > self::CACHE_TTL_SECONDS) {
+        $skipCache = $_GET['nocache'] ?? false;
+
+        if (!file_exists($cache) || time() - filemtime($cache) > self::CACHE_TTL_SECONDS || $skipCache) {
             $data = $this->getWeatherDataFromApi($location);
+            $data->isCached = false;
             $this->saveDataToCache($data, $cache);
         } else {
             $data = $this->getWeatherDataFromCache($cache);
+            $data->isCached = true;
         }
 
         return $data;

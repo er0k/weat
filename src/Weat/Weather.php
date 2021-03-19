@@ -4,6 +4,8 @@ namespace Weat;
 
 class Weather
 {
+    public bool $isCached;
+
     public string $location;
 
     public string $timeFriendly;

@@ -71,6 +71,8 @@ class NOAA extends AbstractWeatherService
         $weather->lat = $data->current->geometry->coordinates[1];
         $weather->lon = $data->current->geometry->coordinates[0];
 
+        $weather->isCached = $data->isCached;
+
         return $weather;
     }
 

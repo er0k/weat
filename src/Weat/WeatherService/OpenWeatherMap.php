@@ -52,6 +52,8 @@ class OpenWeatherMap extends AbstractWeatherService
         // $weather->wind = $data->wind->speed . 'MPH at ' . $data->wind->deg . ' degrees';
         $weather->wind = "From the $windDirection at $windSpeed MPH";
 
+        $weather->isCached = $data->isCached;
+
         return $weather;
     }
 
