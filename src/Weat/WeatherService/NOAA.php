@@ -111,6 +111,7 @@ class NOAA extends AbstractWeatherService
      */
     private function request(string $url): stdClass
     {
+        error_log("requesting $url");
         $ch = curl_init();
         $options = [
             CURLOPT_URL => $url,
