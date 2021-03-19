@@ -141,6 +141,8 @@ abstract class AbstractWeatherService
 
         $this->cacheFile = $fullpath;
 
+        error_log("cachefile: " . $this->cacheFile);
+
         return $this->cacheFile;
     }
 
