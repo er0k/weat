@@ -5,13 +5,14 @@ const services = [
 
 const showServices = _=> {
     let list = "<ul>";
-    services.map(service => list += `<li><a href="#${service.name}" onclick="showWeather(${service.id});">${service.name}</a></li>`);
+    services.map(service => {
+        let stringifiedService = JSON.stringify(service)
+        list += `<li><a href="#${service.name}" onclick=showWeather(${stringifiedService})>${service.name}</a></li>`
+    })
     list += "</ul>";
     let servicesDiv = document.getElementById("services")
     servicesDiv.innerHTML = list;
 }
-
-showServices();
 
 const getWeather = async serviceId => {
     let weatherResp = await fetch("w.php?s=" + serviceId);
@@ -19,12 +20,12 @@ const getWeather = async serviceId => {
     return contents;
 }
 
-const showWeather = async serviceId => {
-    let data = await getWeather(serviceId);
-    console.log(serviceId, data);
+const showWeather = async service => {
+    let data = await getWeather(service.id);
+    window.location.hash = '#' + service.name;
+    console.log(service, data);
 
     for (let item in data.location) {
-
         if (document.getElementById(item)) {
             console.log(item, data.location[item]);
             document.getElementById(item).textContent = data.location[item];
@@ -44,5 +45,11 @@ const showWeather = async serviceId => {
 
 if (window.location.hash) {
     let presetService = services.find(service => service.name === decodeURI(window.location.hash).substr(1));
-    showWeather(presetService.id);
+    showWeather(presetService);
+} else {
+    services.forEach(service => {
+        showWeather(service);
+    })
 }
+
+showServices();
