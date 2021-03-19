@@ -22,8 +22,6 @@ class Weat
 
     public function run(): string
     {
-        $service = $this->getService();
-
         $location = $this->getLocationFromIP();
 
         $weather = (new WeatherService($this->config, $this->getService()))
