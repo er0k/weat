@@ -44,6 +44,47 @@ abstract class AbstractWeatherService
     abstract protected function hydrate(Weather $weather, \stdClass $data): Weather;
 
     /**
+     * @throws Exception
+     */
+    protected function request(string $url): stdClass
+    {
+        error_log("requesting $url");
+        $ch = curl_init();
+        $options = [
+            CURLOPT_URL => $url,
+            CURLOPT_HEADER => true,
+            CURLOPT_FAILONERROR => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_CONNECTTIMEOUT => 5,
+            CURLOPT_TIMEOUT => 5,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_USERAGENT => 'r0k/weat',
+        ];
+        curl_setopt_array($ch, $options);
+        if (!$response = curl_exec($ch)) {
+            $error = curl_error($ch);
+            curl_close($ch);
+            throw new Exception($error);
+        }
+        $responseCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $headerSize = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+        $responseHeaders = substr($response, 0, $headerSize);
+        $responseBody = substr($response, $headerSize);
+        error_log("responseCode: $responseCode");
+        curl_close($ch);
+
+        $jsonData = json_decode($responseBody);
+
+        if (is_null($jsonData)) {
+            error_log("responseHeaders: $responseHeaders");
+            error_log("responseBody: $responseBody");
+            throw new Exception("Could not decode data!");
+        }
+
+        return $jsonData;
+    }
+
+    /**
      * @param  int|string $degrees
      */
     protected function celsiusToFahrenheit($degrees): int

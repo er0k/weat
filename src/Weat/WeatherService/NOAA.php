@@ -106,31 +106,4 @@ class NOAA extends AbstractWeatherService
         return $current;
     }
 
-    /**
-     * @throws Exception
-     */
-    private function request(string $url): stdClass
-    {
-        error_log("requesting $url");
-        $ch = curl_init();
-        $options = [
-            CURLOPT_URL => $url,
-            CURLOPT_FAILONERROR => true,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CONNECTTIMEOUT => 5,
-            CURLOPT_TIMEOUT => 5,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_USERAGENT => 'r0k/weat',
-        ];
-        curl_setopt_array($ch, $options);
-        if (!$response = curl_exec($ch)) {
-            $error = curl_error($ch);
-            curl_close($ch);
-            throw new Exception($error);
-        }
-        curl_close($ch);
-
-        return json_decode($response);
-    }
-
 }
