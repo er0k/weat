@@ -51,6 +51,10 @@ class Weat
     private function getLocationFromIP(): Location
     {
         $ip = $_GET['ip'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'];
+        $ips = explode(',', $ip);
+        $ip = reset($ips);
+
+        error_log("ip: $ip");
 
         if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) ) {
             // if it's a local IP, no need to try and geolocate
