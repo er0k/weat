@@ -87,6 +87,14 @@ abstract class AbstractWeatherService
         return $pascal * 0.01;
     }
 
+    protected function getPressureDifference(int $currentPressure): float
+    {
+        // millibars at sea level
+        $standardPressure = 1013.25;
+
+        return $currentPressure - $standardPressure;
+    }
+
     private function getWeatherData(Location $location): stdClass
     {
         $cache = $this->getCacheFilename($location);
@@ -155,14 +163,6 @@ abstract class AbstractWeatherService
         }
 
         return json_decode(file_get_contents($cache));
-    }
-
-    protected function getPressureDifference(int $currentPressure): float
-    {
-        // millibars at sea level
-        $standardPressure = 1013.25;
-
-        return $currentPressure - $standardPressure;
     }
 
     private function getTempdir(): string
