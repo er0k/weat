@@ -41,6 +41,12 @@ const showWeather = async service => {
             }
         }
     }
+
+    for (let item in data.sun) {
+        if (document.getElementById(item)) {
+            document.getElementById(item).textContent = data.sun[item].date;
+        }
+    }
 }
 
 if (window.location.hash) {
