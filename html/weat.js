@@ -14,20 +14,27 @@ const showServices = _=> {
     servicesDiv.innerHTML = list;
 }
 
-const getWeather = async serviceId => {
-    let weatherResp = await fetch("w.php?s=" + serviceId);
+const getWeather = async service => {
+    let url = `w.php?s=${service.id}`;
+    if (service.ip) {
+        url += `&ip=${service.ip}`;
+    }
+    if (service.nocache) {
+        url += `&nocache=${service.nocache}`;
+    }
+
+    let weatherResp = await fetch(url);
     let contents = await weatherResp.json();
     return contents;
 }
 
 const showWeather = async service => {
-    let data = await getWeather(service.id);
+    let data = await getWeather(service);
     window.location.hash = '#' + service.name;
-    console.log(service, data);
+    console.log(service.name, data);
 
     for (let item in data.location) {
         if (document.getElementById(item)) {
-            console.log(item, data.location[item]);
             document.getElementById(item).textContent = data.location[item];
         }
     }
@@ -47,6 +54,20 @@ const showWeather = async service => {
             document.getElementById(item).textContent = data.sun[item].date;
         }
     }
+}
+
+if (window.location.search) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let entries = urlParams.entries();
+    let extra = {};
+    for(let entry of entries) {
+        extra[`${entry[0]}`] = `${entry[1]}`;
+    }
+    services.map(service => {
+        for(let e in extra) {
+            service[`${e}`] = `${extra[e]}`;
+        }
+    });
 }
 
 if (window.location.hash) {
