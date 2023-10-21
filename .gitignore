@@ -3,3 +3,4 @@ config/config.php
 composer.lock
 vendor
 
+data

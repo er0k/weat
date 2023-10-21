@@ -5,7 +5,8 @@ require 'vendor/autoload.php';
 
 $config = new Weat\Config();
 $locator = new GeoIp2\Database\Reader($config->city_db);
-$weat = new Weat($config, $locator);
+$store = new SleekDB\Store('weat', $config->store, $config->store_config);
+$weat = new Weat($config, $locator, $store);
 
 try {
     echo $weat->run();

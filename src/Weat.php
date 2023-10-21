@@ -1,9 +1,11 @@
 <?php
 
 use GeoIp2\Database\Reader as Locator;
+use SleekDB\Store;
 use Weat\Config;
 use Weat\Location;
 use Weat\Exception;
+use Weat\Receiver;
 use Weat\Sun;
 use Weat\Weather;
 use Weat\WeatherService;
@@ -14,17 +16,28 @@ class Weat
 
     private Locator $locator;
 
-    public function __construct(Config $config, Locator $locator)
+    private Store $store;
+
+    public function __construct(Config $config, Locator $locator, Store $store)
     {
         $this->config = $config;
         $this->locator = $locator;
+        $this->store = $store;
     }
 
-    public function run(): string
+    public function run(): ?string
     {
+        $service = $this->getService();
+
+        if (!$service) {
+            // no service requested, so we're probably receiving data
+            (new Receiver($this->config, $this->store))->save();
+            return null;
+        }
+
         $location = $this->getLocationFromIP();
 
-        $weather = (new WeatherService($this->config, $this->getService()))
+        $weather = (new WeatherService($this->config, $service))
             ->getWeather($location);
 
         $sun = $this->getSunTimes($location, $weather);
@@ -35,12 +48,12 @@ class Weat
             'sun' => $sun,
         ];
 
-        return json_encode($output);
+        return $this->sendJson($output);
     }
 
     private function getService(): int
     {
-        $service = $_GET['s'] ?? WeatherService::TYPES['NOAA'];
+        $service = $_GET['s'] ?? WeatherService::TYPES['LOCAL'];
 
         return $service;
     }
@@ -146,6 +159,12 @@ class Weat
         $sun->setDiff = $now->diff($sun->set);
 
         return $sun;
+    }
+
+    private function sendJson(array $out): string
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        return json_encode($out);
     }
 
 }

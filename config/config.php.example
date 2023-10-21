@@ -9,6 +9,13 @@ return [
     'city_db' => '/opt/geoip/GeoLite2-City.mmdb',
     'country_db' => '/opt/geoip/GeoLite2-Country.mmdb',
 
+    'store' => '/var/www/data',
+    'store_config' => [
+        'auto_cache' => true,
+        'cache_lifetime' => 3600,
+        'timeout' => false,
+    ],
+
     'default_location' => [
         'country' => 'United States',
         'city' => 'Philadelphia',

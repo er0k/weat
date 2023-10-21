@@ -7,6 +7,7 @@ use Weat\WeatherService\AbstractWeatherService;
 class WeatherService
 {
     const TYPES = [
+        'LOCAL' => 0,
         'WEATHER_UNDERGROUND' => 1,
         'OPEN_WEATHER_MAP' => 2,
         'NOAA' => 3,
