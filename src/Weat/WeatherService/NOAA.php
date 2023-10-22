@@ -19,7 +19,7 @@ class NOAA extends AbstractWeatherService
      * @throws Exception
      * @return \stdClass
      */
-    protected function getWeatherDataFromApi(Location $location): stdClass
+    protected function getWeatherDataFromService(Location $location): stdClass
     {
 
         $urlMeta = sprintf(self::META_URL, $location->lat, $location->lon);

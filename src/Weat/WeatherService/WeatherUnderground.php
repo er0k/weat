@@ -12,7 +12,7 @@ class WeatherUnderground extends AbstractWeatherService
 
     const URL = "https://api.wunderground.com/api/%s/%s/q/%s";
 
-    protected function getWeatherDataFromApi(Location $location): stdClass
+    protected function getWeatherDataFromService(Location $location): stdClass
     {
         $key = $this->config->wunderground_key;
 

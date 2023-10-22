@@ -12,7 +12,7 @@ class OpenWeatherMap extends AbstractWeatherService
     const URL = 'http://api.openweathermap.org/data/2.5/weather%s&units=imperial&APPID=%s';
     const FORECAST_URL = 'http://api.openweathermap.org/data/2.5/forecast%s&units=imperial&APPID=%s';
 
-    protected function getWeatherDataFromApi(Location $location): stdClass
+    protected function getWeatherDataFromService(Location $location): stdClass
     {
         $key = $this->config->open_weather_map_key;
 

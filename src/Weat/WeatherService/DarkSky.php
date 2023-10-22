@@ -9,7 +9,7 @@ use Weat\Weather;
 
 class DarkSky extends AbstractWeatherService
 {
-    protected function getWeatherDataFromApi(Location $location)
+    protected function getWeatherDataFromService(Location $location)
     {
         throw new Exception("Not implemented");
     }

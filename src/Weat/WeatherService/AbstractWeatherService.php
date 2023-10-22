@@ -34,7 +34,7 @@ abstract class AbstractWeatherService
         return $this->hydrate($weather, $data);
     }
 
-    abstract protected function getWeatherDataFromApi(Location $location): stdClass;
+    abstract protected function getWeatherDataFromService(Location $location): stdClass;
 
     /**
      * @param  Weather $weather
@@ -143,7 +143,7 @@ abstract class AbstractWeatherService
         $skipCache = $_GET['nocache'] ?? false;
 
         if (!file_exists($cache) || time() - filemtime($cache) > self::CACHE_TTL_SECONDS || $skipCache) {
-            $data = $this->getWeatherDataFromApi($location);
+            $data = $this->getWeatherDataFromService($location);
             $data->isCached = false;
             $this->saveDataToCache($data, $cache);
         } else {
