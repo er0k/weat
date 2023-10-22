@@ -16,6 +16,9 @@ return [
         'timeout' => false,
     ],
 
+    'station_type' => '',
+    'station_id' => '',
+
     'default_location' => [
         'country' => 'United States',
         'city' => 'Philadelphia',
