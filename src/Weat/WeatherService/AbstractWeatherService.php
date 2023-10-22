@@ -132,6 +132,9 @@ abstract class AbstractWeatherService
         return $pascal * 0.01;
     }
 
+    /**
+     * @todo account for elevation
+     */
     protected function getPressureDifference(int $currentPressure): float
     {
         // millibars at sea level
