@@ -27,17 +27,14 @@ class Weat
 
     public function run(): ?string
     {
-        $service = $this->getService();
-
-        if (!$service) {
-            // no service requested, so we're probably receiving data
+        if (!$this->isServiceRequested()) {
             (new Receiver($this->config, $this->store))->save();
             return null;
         }
 
         $location = $this->getLocationFromIP();
 
-        $weather = (new WeatherService($this->config, $service))
+        $weather = (new WeatherService($this->config, $this->getService()))
             ->getWeather($location);
 
         $sun = $this->getSunTimes($location, $weather);
@@ -51,11 +48,18 @@ class Weat
         return $this->sendJson($output);
     }
 
+    private function isServiceRequested(): bool
+    {
+        if (isset($_GET['s'])) {
+            return true;
+        }
+
+        return false;
+    }
+
     private function getService(): int
     {
-        $service = $_GET['s'] ?? WeatherService::TYPES['LOCAL'];
-
-        return $service;
+        return $_GET['s'];
     }
 
     /**
