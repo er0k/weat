@@ -1,37 +1,26 @@
 <?php
 
 use Weat\Config;
-use Weat\Location;
 use Weat\Locator;
-use Weat\Exception;
 use Weat\Receiver;
 use Weat\SolarTracker;
-use Weat\Weather;
 use Weat\WeatherService;
 
 class Weat
 {
-    private Config $config;
-
-    public function __construct(Config $config)
+    public function run(): string
     {
-        $this->config = $config;
-    }
+        $config = new Config();
 
-    public function run(): ?string
-    {
         if (!$this->isServiceRequested()) {
-            (new Receiver($this->config))->save();
-            return null;
+            (new Receiver($config))->save();
+            return '';
         }
 
-        $location = (new Locator($this->config))->getLocation();
+        $service = $this->getService();
 
-        $weather = (new WeatherService(
-            $this->config,
-            $this->getService()
-        ))->getWeather($location);
-
+        $location = (new Locator($config))->getLocation();
+        $weather = (new WeatherService($config, $service))->getWeather($location);
         $sun = (new SolarTracker())->getSun($location, $weather);
 
         $output = [
