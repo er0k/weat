@@ -80,9 +80,9 @@ class Weat
 
         try {
             $record = $this->locator->city($ip);
-        } catch (AddressNotFoundException $e) {
+        } catch (GeoIp2\Exception\AddressNotFoundException $e) {
             throw new Exception("Could not geolocate your IP", 1, $e);
-        } catch (InvalidDatabaseException $e) {
+        } catch (\MaxMind\Db\Reader\InvalidDatabaseException $e) {
             throw new Exception("Could not read geolocation database", 2, $e);
         }
 
