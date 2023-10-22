@@ -53,7 +53,7 @@ class Receiver
             batt2
             batt3
             batt_co2
-        **/
+         **/
 
         $data = $_REQUEST;
 
@@ -66,13 +66,14 @@ class Receiver
         return;
     }
 
-    private function isMyStation(array $data): bool {
+    private function isMyStation(array $data): bool
+    {
         if (!isset($data['stationtype'])) {
             error_log("no station type given");
             return false;
         }
 
-        if (!isset ($data['PASSKEY'])) {
+        if (!isset($data['PASSKEY'])) {
             error_log("no station ID given");
             return false;
         }
@@ -95,5 +96,4 @@ class Receiver
         http_response_code(403);
         die();
     }
-
 }
