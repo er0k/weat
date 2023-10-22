@@ -3,18 +3,18 @@
 namespace Weat;
 
 use Weat\Config;
-use SleekDB\Store;
+use Weat\WeatherService;
+use Weat\WeatherStorage;
 
 class Receiver
 {
     private Config $config;
+    private WeatherStorage $store;
 
-    private Store $store;
-
-    public function __construct(Config $config, Store $store)
+    public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->store = $store;
+        $this->store = new WeatherStorage($config);
     }
 
     public function save(): Void
@@ -61,7 +61,7 @@ class Receiver
             $this->forbid();
         }
 
-        $this->store->insert($data);
+        $this->store->save(WeatherService::TYPES['LOCAL'], $data);
 
         return;
     }

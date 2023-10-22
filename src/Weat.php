@@ -1,7 +1,6 @@
 <?php
 
 use GeoIp2\Database\Reader as Locator;
-use SleekDB\Store;
 use Weat\Config;
 use Weat\Location;
 use Weat\Exception;
@@ -16,26 +15,25 @@ class Weat
 
     private Locator $locator;
 
-    private Store $store;
-
-    public function __construct(Config $config, Locator $locator, Store $store)
+    public function __construct(Config $config, Locator $locator)
     {
         $this->config = $config;
         $this->locator = $locator;
-        $this->store = $store;
     }
 
     public function run(): ?string
     {
         if (!$this->isServiceRequested()) {
-            (new Receiver($this->config, $this->store))->save();
+            (new Receiver($this->config))->save();
             return null;
         }
 
         $location = $this->getLocationFromIP();
 
-        $weather = (new WeatherService($this->config, $this->getService()))
-            ->getWeather($location);
+        $weather = (new WeatherService(
+            $this->config,
+            $this->getService()
+        ))->getWeather($location);
 
         $sun = $this->getSunTimes($location, $weather);
 

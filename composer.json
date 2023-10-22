@@ -3,7 +3,6 @@
         "psr-4": { "": "src/" }
     },
     "require": {
-        "geoip2/geoip2": "^2.4",
-        "rakibtg/sleekdb": "^2.15"
+        "geoip2/geoip2": "^2.4"
     }
 }
