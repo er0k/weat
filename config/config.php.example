@@ -8,16 +8,10 @@ return [
     // http://dev.maxmind.com/geoip/geoip2/geolite2/
     'city_db' => '/opt/geoip/GeoLite2-City.mmdb',
     'country_db' => '/opt/geoip/GeoLite2-Country.mmdb',
+    'weat_db' => '/var/www/data/weat.db',
 
-    'store' => '/var/www/data',
-    'store_config' => [
-        'auto_cache' => true,
-        'cache_lifetime' => 3600,
-        'timeout' => false,
-    ],
-
-    'station_type' => '',
-    'station_id' => '',
+    'station_type' => 'AMBWeatherPro_V5.0.6',
+    'station_id' => '00:00:00:00:00:00',
 
     'default_location' => [
         'country' => 'United States',

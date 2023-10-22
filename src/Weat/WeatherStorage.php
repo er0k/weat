@@ -8,14 +8,11 @@ use Weat\Exception;
 
 class WeatherStorage
 {
-    private Config $config;
-
     private ?SQLite3 $db = null;
 
     public function __construct(Config $config)
     {
-        $this->db = $this->getDb($config->store);
-        $this->initialize();
+        $this->db = $this->getDb($config->weat_db);
     }
 
     public function save(int $service, array $data): Void
@@ -25,8 +22,11 @@ class WeatherStorage
         $stmt->bindValue(':service', $service, SQLITE3_INTEGER);
         $stmt->bindValue(':data', json_encode($data), SQLITE3_TEXT);
 
-        $result = $stmt->execute();
-        print_r(var_dump('result'));
+        $saved = $stmt->execute();
+
+        if (!$saved) {
+            error_log("failed to save data for service $service");
+        }
     }
 
     public function fetchLatest(int $service)
@@ -40,18 +40,17 @@ class WeatherStorage
         return $result['data'];
     }
 
-    public function initialize()
-    {
-        $this->createTable();
-    }
-
     private function getDb(string $dbPath)
     {
         if ($this->db) {
             return $this->db;
         }
 
-        return new SQLite3($this->getDbFile($dbPath));
+        $db = new SQLite3($this->getDbFile($dbPath));
+
+        $this->createTable($db);
+
+        return $db;
     }
 
     private function getDbFile(string $dbPath): string
@@ -67,19 +66,19 @@ class WeatherStorage
         return $dbPath;
     }
 
-    private function createTable()
+    private function createTable(SQLite3 $db)
     {
         // one table, two cols: service, data
         // service is an int that corresponds to WeatherService::TYPES
         // data is arbitrary JSON data however it comes back from the $service
         $existsSql = "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'weat'";
-        $tableExists = $this->db->query($existsSql)->fetchArray();
+        $tableExists = $db->query($existsSql)->fetchArray();
 
         if ($tableExists) {
             return;
         }
 
-        $createdTable = $this->db->query("CREATE TABLE weat (service INT NOT NULL, data JSON NOT NULL)");
+        $createdTable = $db->query("CREATE TABLE weat (service INT NOT NULL, data JSON NOT NULL)");
 
         if (!$createdTable) {
             throw new Exception("Could not create db table :(");

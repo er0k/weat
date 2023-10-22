@@ -6,9 +6,12 @@ use \stdClass;
 use Weat\Exception;
 use Weat\Location;
 use Weat\Weather;
+use Weat\WeatherService;
 
 class OpenWeatherMap extends AbstractWeatherService
 {
+    const TYPE = WeatherService::TYPES['OPEN_WEATHER_MAP'];
+
     const URL = 'http://api.openweathermap.org/data/2.5/weather%s&units=imperial&APPID=%s';
     const FORECAST_URL = 'http://api.openweathermap.org/data/2.5/forecast%s&units=imperial&APPID=%s';
 

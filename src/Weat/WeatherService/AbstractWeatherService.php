@@ -7,6 +7,7 @@ use Weat\Config;
 use Weat\Exception;
 use Weat\Location;
 use Weat\Weather;
+use Weat\WeatherStorage;
 
 abstract class AbstractWeatherService
 {
@@ -14,11 +15,14 @@ abstract class AbstractWeatherService
 
     protected Config $config;
 
+    protected WeatherStorage $store;
+
     protected string $cacheFile;
 
     public function __construct(Config $config)
     {
         $this->config = $config;
+        $this->store = new WeatherStorage($config);
     }
 
     public function getWeather(Location $location): Weather
@@ -143,10 +147,12 @@ abstract class AbstractWeatherService
         $skipCache = $_GET['nocache'] ?? false;
 
         if (!file_exists($cache) || time() - filemtime($cache) > self::CACHE_TTL_SECONDS || $skipCache) {
+            error_log("fetching weather from service");
             $data = $this->getWeatherDataFromService($location);
             $data->isCached = false;
             $this->saveDataToCache($data, $cache);
         } else {
+            error_log("fetching weather from cache");
             $data = $this->getWeatherDataFromCache($cache);
             $data->isCached = true;
         }

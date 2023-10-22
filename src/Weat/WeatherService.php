@@ -36,7 +36,14 @@ class WeatherService
             case self::TYPES['NOAA']:
                 return new WeatherService\NOAA($config);
             case self::TYPES['DARK_SKY']:
-                return new WeatherService\DarkSky($config);;
+                return new WeatherService\DarkSky($config);
+            case self::TYPES['LOCAL']:
+                // This is pretty hacky, but it makes sure we aren't caching data
+                // from the local weather service. Caching is really only useful
+                // when we get data from weather APIs. Eventually the makeshift
+                // caching will be replaced by a proper WeatherStorage class
+                $_GET['nocache'] = true;
+                return new WeatherService\Local($config);
             default:
                 throw new Exception("uknown weather service: {$service}");
         }

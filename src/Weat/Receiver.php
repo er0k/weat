@@ -19,42 +19,6 @@ class Receiver
 
     public function save(): Void
     {
-        /**
-            stationtype
-            PASSKEY
-            dateutc
-            tempf
-            humidity
-            windspeedmph
-            windgustmph
-            maxdailygust
-            winddir
-            winddir_avg10m
-            uv
-            solarradiation
-            hourlyrainin
-            dailyrainin
-            weeklyrainin
-            monthlyrainin
-            yearlyrainin
-            battout
-            tempinf
-            humidityin
-            baromrelin
-            baromabsin
-            battin
-            temp1f
-            humidity1
-            temp2f
-            humidity2
-            temp3f
-            humidity3
-            batt1
-            batt2
-            batt3
-            batt_co2
-         **/
-
         $data = $_REQUEST;
 
         if (!$this->isMyStation($data)) {
@@ -62,8 +26,6 @@ class Receiver
         }
 
         $this->store->save(WeatherService::TYPES['LOCAL'], $data);
-
-        return;
     }
 
     private function isMyStation(array $data): bool

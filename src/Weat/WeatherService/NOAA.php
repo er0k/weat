@@ -6,9 +6,11 @@ use \stdClass;
 use Weat\Exception;
 use Weat\Location;
 use Weat\Weather;
+use Weat\WeatherService;
 
 class NOAA extends AbstractWeatherService
 {
+    const TYPE = WeatherService::TYPES['NOAA'];
 
     const META_URL = 'https://api.weather.gov/points/%.4f,%.4f';
     const CURRENT_URL = 'https://api.weather.gov/stations/%s/observations/latest';
