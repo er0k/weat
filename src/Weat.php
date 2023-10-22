@@ -54,10 +54,26 @@ class Weat
 
     private function getService(): int
     {
+        if (!in_array($_GET['s'], WeatherService::TYPES)) {
+            $this->badRequest();
+        }
+
         return $_GET['s'];
     }
 
-    private function getSunTimes(Location $location, Weather $weather): Sun
+    private function badRequest(): Void
+    {
+        http_response_code(400);
+        die();
+    }
+
+    private function sendJson(array $out): string
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        return json_encode($out);
+    }
+
+    public function getSunTimes(Location $location, Weather $weather): Sun
     {
         $sun = new Sun();
 
@@ -104,12 +120,6 @@ class Weat
         $sun->setDiff = $now->diff($sun->set);
 
         return $sun;
-    }
-
-    private function sendJson(array $out): string
-    {
-        header('Content-Type: application/json; charset=utf-8');
-        return json_encode($out);
     }
 
 }
