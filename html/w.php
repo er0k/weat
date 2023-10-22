@@ -4,8 +4,7 @@ chdir(dirname(__DIR__));
 require 'vendor/autoload.php';
 
 $config = new Weat\Config();
-$locator = new GeoIp2\Database\Reader($config->city_db);
-$weat = new Weat($config, $locator);
+$weat = new Weat($config);
 
 try {
     echo $weat->run();

@@ -1,8 +1,8 @@
 <?php
 
-use GeoIp2\Database\Reader as Locator;
 use Weat\Config;
 use Weat\Location;
+use Weat\Locator;
 use Weat\Exception;
 use Weat\Receiver;
 use Weat\Sun;
@@ -13,12 +13,9 @@ class Weat
 {
     private Config $config;
 
-    private Locator $locator;
-
-    public function __construct(Config $config, Locator $locator)
+    public function __construct(Config $config)
     {
         $this->config = $config;
-        $this->locator = $locator;
     }
 
     public function run(): ?string
@@ -28,7 +25,7 @@ class Weat
             return null;
         }
 
-        $location = $this->getLocationFromIP();
+        $location = (new Locator($this->config))->getLocation();
 
         $weather = (new WeatherService(
             $this->config,
@@ -58,60 +55,6 @@ class Weat
     private function getService(): int
     {
         return $_GET['s'];
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function getLocationFromIP(): Location
-    {
-        $ip = $_GET['ip'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'];
-        $ips = explode(',', $ip);
-        $ip = reset($ips);
-
-        error_log("ip: $ip");
-
-        if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE) ) {
-            // if it's a local IP, no need to try and geolocate
-            return $this->getDefaultLocation();
-        }
-
-        try {
-            $record = $this->locator->city($ip);
-        } catch (GeoIp2\Exception\AddressNotFoundException $e) {
-            throw new Exception("Could not geolocate your IP", 1, $e);
-        } catch (\MaxMind\Db\Reader\InvalidDatabaseException $e) {
-            throw new Exception("Could not read geolocation database", 2, $e);
-        }
-
-        $location = new Location();
-        $location->ip = $ip;
-        $location->country = $record->country->name;
-        $location->city = $record->city->name;
-        $location->state = $record->mostSpecificSubdivision->name;
-        $location->zip = $record->postal->code;
-        $location->lat = $record->location->latitude;
-        $location->lon = $record->location->longitude;
-        $location->timezone = $record->location->timeZone;
-
-        return $location;
-    }
-
-    private function getDefaultLocation(): Location
-    {
-        $defaultLocation = $this->config->default_location;
-
-        $location = new Location();
-        $location->ip = '127.0.0.1';
-        $location->country = $defaultLocation['country'];
-        $location->city = $defaultLocation['city'];
-        $location->state = $defaultLocation['state'];
-        $location->zip = $defaultLocation['zip'];
-        $location->lat = $defaultLocation['lat'];
-        $location->lon = $defaultLocation['lon'];
-        $location->timezone = $defaultLocation['timezone'];
-
-        return $location;
     }
 
     private function getSunTimes(Location $location, Weather $weather): Sun
