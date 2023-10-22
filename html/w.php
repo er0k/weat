@@ -12,4 +12,5 @@ try {
     echo $weat->run();
 } catch (Weat\Exception $e) {
     echo "<h2>{$e->getMessage()}</h2>";
+    error_log($e);
 }
