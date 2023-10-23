@@ -15,7 +15,7 @@ const showServices = _=> {
 }
 
 const getWeather = async service => {
-    let url = `w.php?s=${service.id}`;
+    let url = `weat.php?s=${service.id}`;
     if (service.ip) {
         url += `&ip=${service.ip}`;
     }
