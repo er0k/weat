@@ -2,6 +2,7 @@
 
 namespace Weat;
 
+use Weat\Exception;
 use Weat\WeatherService\AbstractWeatherService;
 
 class WeatherService
@@ -36,13 +37,15 @@ class WeatherService
     {
         switch ($service) {
             case self::TYPES['WEATHER_UNDERGROUND']:
-                return new WeatherService\WeatherUnderground($config);
+                // return new WeatherService\WeatherUnderground($config);
+                $this->gone("RIP wunderground");
             case self::TYPES['OPEN_WEATHER_MAP']:
                 return new WeatherService\OpenWeatherMap($config);
             case self::TYPES['NOAA']:
                 return new WeatherService\NOAA($config);
             case self::TYPES['DARK_SKY']:
-                return new WeatherService\DarkSky($config);
+                // return new WeatherService\DarkSky($config);
+                $this->gone("RIP darksky");
             case self::TYPES['LOCAL']:
                 // This is pretty hacky, but it makes sure we aren't caching data
                 // from the local weather service. Caching is really only useful
@@ -55,5 +58,9 @@ class WeatherService
         }
     }
 
-
+    private function gone(string $msg)
+    {
+        http_response_code(410);
+        die($msg);
+    }
 }
