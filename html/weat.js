@@ -1,9 +1,12 @@
-const services = [
-    { id: 2, name: "OpenWeatherMap" },
-    { id: 3, name: "NOAA" },
-];
+const WEAT = "weat.php";
 
-const showServices = _=> {
+const getServices = async _=> {
+    let url = `${WEAT}?l`;
+    let serviceResp = await fetch(url);
+    return serviceResp.json();
+}
+
+const showServices = services => {
     let list = "<ul>";
     services.map(service => {
         let stringifiedService = JSON.stringify(service)
@@ -15,7 +18,7 @@ const showServices = _=> {
 }
 
 const getWeather = async service => {
-    let url = `weat.php?s=${service.id}`;
+    let url = `${WEAT}?s=${service.id}`;
     if (service.ip) {
         url += `&ip=${service.ip}`;
     }
@@ -56,27 +59,31 @@ const showWeather = async service => {
     }
 }
 
-if (window.location.search) {
-    let urlParams = new URLSearchParams(window.location.search);
-    let entries = urlParams.entries();
-    let extra = {};
-    for(let entry of entries) {
-        extra[`${entry[0]}`] = `${entry[1]}`;
+async function main() {
+    const services = await getServices();
+
+    if (window.location.hash) {
+        let presetService = services.find(service => service.name === decodeURI(window.location.hash).substr(1));
+        showWeather(presetService);
+    } else {
+        services.forEach(service => {
+            showWeather(service);
+        })
     }
-    services.map(service => {
-        for(let e in extra) {
-            service[`${e}`] = `${extra[e]}`;
+    if (window.location.search) {
+        let urlParams = new URLSearchParams(window.location.search);
+        let entries = urlParams.entries();
+        let extra = {};
+        for(let entry of entries) {
+            extra[`${entry[0]}`] = `${entry[1]}`;
         }
-    });
+        services.map(service => {
+            for(let e in extra) {
+                service[`${e}`] = `${extra[e]}`;
+            }
+        });
+    }
+    showServices(services);
 }
 
-if (window.location.hash) {
-    let presetService = services.find(service => service.name === decodeURI(window.location.hash).substr(1));
-    showWeather(presetService);
-} else {
-    services.forEach(service => {
-        showWeather(service);
-    })
-}
-
-showServices();
+main();

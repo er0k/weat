@@ -14,6 +14,12 @@ class WeatherService
         'DARK_SKY' => 4,
     ];
 
+    const ACTIVE_TYPES = [
+        ['id' => 0, 'name' => 'Local'],
+        ['id' => 2, 'name' => 'OpenWeatherMap'],
+        ['id' => 3, 'name' => 'NOAA'],
+    ];
+
     private $service;
 
     public function __construct(Config $config, int $service)

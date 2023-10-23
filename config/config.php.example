@@ -1,6 +1,8 @@
 <?php
 
 return [
+    // the hostname of the public reverse proxy
+    'public_url' => 'weat.example.com',
     // https://www.wunderground.com/weather/api
     'wunderground_key' => '',
     // https://openweathermap.org/appid

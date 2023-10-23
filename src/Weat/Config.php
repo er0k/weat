@@ -6,6 +6,7 @@ class Config
 {
     const CONFIG_FILE = 'config/config.php';
 
+    public string $public_url;
     public string $open_weather_map_key;
     public string $weat_db;
     public string $city_db;

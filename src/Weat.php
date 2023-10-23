@@ -12,6 +12,10 @@ class Weat
     {
         $config = new Config();
 
+        if ($this->isListRequested()) {
+            return $this->sendJson($this->getActiveServices($config));
+        }
+
         if (!$this->isServiceRequested()) {
             (new Receiver($config))->save();
             return '';
@@ -30,6 +34,27 @@ class Weat
         ];
 
         return $this->sendJson($output);
+    }
+
+    private function isListRequested(): bool
+    {
+        if (isset($_GET['l'])) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function getActiveServices(Config $config): array
+    {
+        $serviceList = WeatherService::ACTIVE_TYPES;
+
+        // don't show local weather station at the public URL
+        if ($_SERVER['HTTP_HOST'] == $config->public_url) {
+            unset($serviceList[WeatherService::TYPES['LOCAL']]);
+        }
+
+        return array_values($serviceList);
     }
 
     private function isServiceRequested(): bool
