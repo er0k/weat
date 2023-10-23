@@ -153,14 +153,28 @@ abstract class AbstractWeatherService
     }
 
     /**
-     * @todo account for elevation
+     * @link https://www.omnicalculator.com/physics/air-pressure-at-altitude
      */
-    protected function getPressureDifference(int $currentPressure): float
+    protected function getPressureAtAltitude(float $feet, float $tempF): float
     {
-        // millibars at sea level
-        $standardPressure = 1013.25;
+        // pressure decreases as altitude rises
+        // cold air is more dense and so has higher pressure
+        // warm is is less dense and so has lower pressure
+        $h = $this->feetToMeters($feet); // height in meters
+        $P0 = 101325; // pressure at sea level in pascals
+        $g = 9.80665; // acceleration of gravity in m/s^2
+        $M = 0.0289644; // molar mass of air in kg/mol
+        $R = 8.31432; // universal gas constant
+        $T = $this->celsiusToKelvin($this->fahrenheitToCelsius($tempF)); // temperature in kelvin
+        $P = $P0 * exp( (-$g * $M * $h) / ($R * $T) );
+        return $this->pascalToMillibar($P);
+    }
 
-        return $currentPressure - $standardPressure;
+    protected function getPressureDifference(int $currentPressure, float $feet = 0, float $tempF = 72): float
+    {
+        $standardPressure = $this->getPressureAtAltitude($feet, $tempF);
+
+        return round($currentPressure - $standardPressure, 2);
     }
 
     private function getWeatherData(Location $location): stdClass
