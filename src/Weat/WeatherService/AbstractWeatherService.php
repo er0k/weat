@@ -89,11 +89,21 @@ abstract class AbstractWeatherService
     }
 
     /**
-     * @param  int|string $degrees
+     * @param  int|string $tempF
      */
-    protected function celsiusToFahrenheit($degrees): int
+    protected function celsiusToFahrenheit($tempF): int
     {
-        return $degrees * (9 / 5) + 32;
+        return $tempF * (9 / 5) + 32;
+    }
+
+    protected function fahrenheitToCelsius(float $tempC): float
+    {
+        return ($tempC - 32) * (5 / 9);
+    }
+
+    protected function celsiusToKelvin(float $tempC): float
+    {
+        return $tempC + 273.15;
     }
 
     protected function metersToInches(int $meters): int
@@ -104,6 +114,11 @@ abstract class AbstractWeatherService
     protected function metersToFeet(int $meters): int
     {
         return $meters * 3.28084;
+    }
+
+    protected function feetToMeters(int $feet): int
+    {
+        return $feet / 3.28084;
     }
 
     protected function metersToMiles(int $meters): int
@@ -130,6 +145,11 @@ abstract class AbstractWeatherService
     protected function pascalToMillibar(float $pascal): float
     {
         return $pascal * 0.01;
+    }
+
+    protected function inchesHgToMillibar(float $inches): float
+    {
+        return $inches * 33.8637526;
     }
 
     /**
