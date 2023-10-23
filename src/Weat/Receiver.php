@@ -25,6 +25,8 @@ class Receiver
             $this->forbid();
         }
 
+        $this->accept();
+
         $this->store->save(WeatherService::TYPES['LOCAL'], $data);
     }
 
@@ -57,5 +59,10 @@ class Receiver
     {
         http_response_code(403);
         die();
+    }
+
+    private function accept(): Void
+    {
+        http_response_code(202);
     }
 }
