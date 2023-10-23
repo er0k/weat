@@ -28,10 +28,12 @@ class Local extends AbstractWeatherService
     {
         $weather->current = '';
         $weather->currentTemp = $data->tempf;
-        $weather->wind = '';
+        $weather->precipitation = "{$data->hourlyrainin}\" hourly ({$data->dailyrainin}\" daily)";
+        $weather->wind = "From the {$this->degreesToDirection($data->winddir)} at {$data->windspeedmph} MPH ({$data->windgustmph} MPH gusts)";
         $weather->humidity = $data->humidity;
         $weather->visibility = '';
-        $weather->pressure = $data->baromabsin;
+        $pressure = $this->inchesHgToMillibar($data->baromabsin);
+        $weather->pressure = $this->getPressureDifference($pressure, 950, $data->tempf);
 
         return $weather;
     }
