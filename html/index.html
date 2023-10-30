@@ -1,41 +1,52 @@
 <!doctype html>
 <html lang="en">
-<html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0">
     <meta charset="utf-8" lang="en">
     <title>weat</title>
     <link rel="stylesheet" type="text/css" href="weat.css">
+    <script src="pv.js" defer init></script>
 </head>
 <body>
 
-<div id="services"></div>
+<div id="services" v-scope="fetchData()">
+    <p v-if="location">{{location.city}}, {{location.state}} {{location.zip}}</p>
+    <p v-if="sun">sunrise: {{sun.rise.date}}, sunset: {{sun.set.date}}</p>
 
-<div id="place">
-    <span id="city"></span>, <span id="state"></span>, <span id="country"></span>
+    <button
+        v-for="(service, index) in services"
+        @click="activateService(service, index)"
+        v-bind:class="{ active: index === activeButton }"
+        :key="index"
+    >
+        {{service.name}}
+    </button>
+
+    <div v-if="weather">
+        <div v-if="weather.alerts" class="alert">
+            <h4 v-for="alert in weather.alerts">{{alert}}</h4>
+        </div>
+        <h1>{{weather.currentTemp}}&#176;F</h1>
+        <h2>{{weather.current}}</h2>
+        <img v-bind:src="weather.currentIcon" height="75" width="75">
+        <dl>
+            <dt>precipitation</dt><dd>{{weather.precipitationHourly}}" hourly</dd>
+            <dt>pressure</dt><dd>{{weather.pressure}}mb</dd>
+            <dt>humidity</dt><dd>{{weather.humidity}} %</dd>
+            <dt>wind</dt><dd>{{weather.wind}}</dd>
+            <dt>visibility</dt><dd>{{weather.visibility}}</dd>
+        </dl>
+        <div v-if="weather.zones">
+            <dl v-for="room in weather.zones">
+                <dt>{{room.name}}</dt><dd>{{room.temp}}&#176;F ({{room.humidity}}%)</dd>
+            </dl>
+        </div>
+        <!-- <pre>{{weather}}</pre> -->
+    </div>
+
 </div>
 
-<div id="weat">
-    <h1><span id="currentTemp"></span> F</h1>
-    <h2 id="current"></h2>
-    <img id="currentIcon" src="" width="75" height="75">
-
-    <dl>
-        <dt>sunrise</dt><dd id="rise"></dd>
-        <dt>sunset</dt><dd id="set"></dd>
-    </dl>
-
-    <dl>
-        <dt>wind</dt><dd id="wind"></dd>
-        <dt>humidity</dt><dd><span id="humidity"></span> %</dd>
-        <dt>pressure</dt><dd><span id="pressure"></span>mb</dd>
-        <dt>visibility</dt><dd id="visibility"></dd>
-        <dt>precipitation</dt><dd id="precipitation"></dd>
-    </dl>
-</div>
+<script src="weat-test.js"></script>
 
 </body>
-
-<script src="weat.js"></script>
-
 </html>

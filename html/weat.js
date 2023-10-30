@@ -1,89 +1,49 @@
-const WEAT = "weat.php";
+const WEAT = "/weat.php"
 
-const getServices = async _=> {
-    let url = `${WEAT}?l`;
-    let serviceResp = await fetch(url);
-    return serviceResp.json();
+const fetchUrl = async url => {
+    let resp = await fetch(url);
+    return resp.json();
 }
 
-const showServices = services => {
-    let list = "<ul>";
-    services.map(service => {
-        let stringifiedService = JSON.stringify(service)
-        list += `<li><a href="#${service.name}" onclick=showWeather(${stringifiedService})>${service.name}</a></li>`
-    })
-    list += "</ul>";
-    let servicesDiv = document.getElementById("services")
-    servicesDiv.innerHTML = list;
+const getServices = async _=> {
+    return await fetchUrl(`${WEAT}?l`);
 }
 
 const getWeather = async service => {
-    let url = `${WEAT}?s=${service.id}`;
-    if (service.ip) {
-        url += `&ip=${service.ip}`;
-    }
-    if (service.nocache) {
-        url += `&nocache=${service.nocache}`;
-    }
-
-    let weatherResp = await fetch(url);
-    let contents = await weatherResp.json();
-    return contents;
+    return await fetchUrl(`${WEAT}?s=${service.id}`);
 }
 
-const showWeather = async service => {
-    let data = await getWeather(service);
-    window.location.hash = '#' + service.name;
-    console.log(service.name, data);
-
-    for (let item in data.location) {
-        if (document.getElementById(item)) {
-            document.getElementById(item).textContent = data.location[item];
-        }
-    }
-
-    for (let item in data.weather) {
-        if (document.getElementById(item)) {
-            if (item == "currentIcon") {
-                document.getElementById(item).src = data.weather[item];
-            } else {
-                document.getElementById(item).textContent = data.weather[item];
+function fetchData() {
+    return {
+        services: null,
+        weather: null,
+        location: null,
+        sun: null,
+        activeButton: null,
+        activateService(service, index) {
+            this.activeButton = index;
+            this.getWeatherFromService(service, true);
+        },
+        async getWeatherFromService(service, activate = false) {
+            let weather = await getWeather(service);
+            this.location = weather.location;
+            this.sun = weather.sun;
+            if (activate) {
+                this.weather = weather.weather;
             }
-        }
-    }
-
-    for (let item in data.sun) {
-        if (document.getElementById(item)) {
-            document.getElementById(item).textContent = data.sun[item].date;
-        }
-    }
+        },
+        get _() {
+            return (async _=> {
+                let services = await getServices();
+                this.services = services;
+                for (let [i, service] of services.entries()) {
+                    if (i == 0) {
+                        this.activateService(service, i);
+                    } else {
+                        this.getWeatherFromService(service);
+                    }
+                }
+            })();
+        },
+    };
 }
-
-async function main() {
-    const services = await getServices();
-
-    if (window.location.hash) {
-        let presetService = services.find(service => service.name === decodeURI(window.location.hash).substr(1));
-        showWeather(presetService);
-    } else {
-        services.forEach(service => {
-            showWeather(service);
-        })
-    }
-    if (window.location.search) {
-        let urlParams = new URLSearchParams(window.location.search);
-        let entries = urlParams.entries();
-        let extra = {};
-        for(let entry of entries) {
-            extra[`${entry[0]}`] = `${entry[1]}`;
-        }
-        services.map(service => {
-            for(let e in extra) {
-                service[`${e}`] = `${extra[e]}`;
-            }
-        });
-    }
-    showServices(services);
-}
-
-main();
