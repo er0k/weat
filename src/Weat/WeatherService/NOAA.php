@@ -44,6 +44,8 @@ class NOAA extends AbstractWeatherService
 
     protected function hydrate(Weather $weather, stdClass $data): Weather
     {
+        // print_r($data);
+
         $current = $data->current->properties;
 
         $date = new \DateTime($current->timestamp);
@@ -55,15 +57,17 @@ class NOAA extends AbstractWeatherService
         $weather->location = $data->closestStations[0]->name;
         $weather->current = $current->textDescription;;
         $weather->currentTemp = number_format($this->celsiusToFahrenheit($current->temperature->value), 1);
-        $weather->dewpoint = $current->dewpoint->value;
+        $weather->dewPoint = $this->celsiusToFahrenheit($current->dewpoint->value);
         $weather->humidity = round($current->relativeHumidity->value);
         $weather->visibility = number_format($this->metersToMiles($current->visibility->value), 1) . ' miles';
         $weather->precipitation = number_format((int) $current->precipitationLast6Hours->value, 2) . ' inches';
+        $weather->precipitationHourly = $this->millimetersToInches($current->precipitationLastHour->value);
 
         // $windSpeed = number_format($this->metersPerSecondToMilesPerHour($current->windSpeed->value), 1);
         $windSpeed = number_format($current->windSpeed->value, 1);
         $windDirection = $this->degreesToDirection((int) $current->windDirection->value);
         $weather->wind = "From the $windDirection at $windSpeed MPH";
+        $weather->windChill = $this->celsiusToFahrenheit($current->windChill->value);
 
         $pressure = $this->pascalToMillibar(floatval($current->barometricPressure->value));
         $weather->pressure = $this->getPressureDifference($pressure);
@@ -72,6 +76,7 @@ class NOAA extends AbstractWeatherService
 
         $weather->lat = $data->current->geometry->coordinates[1];
         $weather->lon = $data->current->geometry->coordinates[0];
+        $weather->elevation = $this->metersToFeet($current->elevation->value);
 
         $weather->isCached = $data->isCached;
 

@@ -26,15 +26,75 @@ class Local extends AbstractWeatherService
 
     protected function hydrate(Weather $weather, stdClass $data): Weather
     {
-        $weather->current = '';
+        // print_r($data);
+
         $weather->currentTemp = $data->tempf;
+        $weather->currentIcon = "idk.png";
         $weather->precipitation = "{$data->hourlyrainin}\" hourly ({$data->dailyrainin}\" daily)";
+        $weather->precipitationHourly = $data->hourlyrainin;
+        $weather->precipitationDaily = $data->dailyrainin;
         $weather->wind = "From the {$this->degreesToDirection($data->winddir)} at {$data->windspeedmph} MPH ({$data->windgustmph} MPH gusts)";
         $weather->humidity = $data->humidity;
+        $weather->dewPoint = $this->getDewPoint($data->tempf, $data->humidity);
         $weather->visibility = '';
         $pressure = $this->inchesHgToMillibar($data->baromabsin);
         $weather->pressure = $this->getPressureDifference($pressure, 950, $data->tempf);
+        $indoor = [];
+        foreach($this->getRoomMap() as $id => $name) {
+            $tempKey = "temp{$id}f";
+            $humidKey = "humidity{$id}";
+            $indoor[] = $this->newIndoorRoom($id, $name, $data->$tempKey, $data->$humidKey);
+        }
+        $weather->zones = $indoor;
+
+        // $weather->alerts = ["here is an alert"];
+
+        $weather->current = $this->getCurrentConditions($weather);
 
         return $weather;
+    }
+
+    private function getCurrentConditions(Weather $weather): string
+    {
+        $current = '';
+
+        if ($weather->currentTemp < 45) {
+            $current .= "kinda cold";
+        } elseif ($weather->currentTemp < 35) {
+            $current .= "cold";
+        } elseif ($weather->currentTemp < 30) {
+            $current .= "fucking cold";
+        }
+
+        if ($weather->precipitationHourly > 0) {
+            $current =  implode(' & ', [$current, "wet"]);
+        }
+
+        if (!empty($current)) {
+            return $current;
+        }
+
+        return "it's fine";
+    }
+
+    private function newIndoorRoom($id, $name, $tempF, $humidity)
+    {
+        $room = new stdClass();
+        $room->id = $id;
+        $room->name = $name;
+        $room->temp = floatval($tempF);
+        $room->humidity = intval($humidity);
+
+        return $room;
+    }
+
+    private function getRoomMap()
+    {
+        return [
+            'in' => 'living room',
+            1 => 'bedroom',
+            2 => 'garage',
+            3 => 'basement',
+        ];
     }
 }

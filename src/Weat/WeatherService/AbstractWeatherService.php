@@ -106,22 +106,27 @@ abstract class AbstractWeatherService
         return $tempC + 273.15;
     }
 
-    protected function metersToInches(int $meters): int
+    protected function metersToInches(float $meters): float
     {
         return $meters * 39.3701;
     }
 
-    protected function metersToFeet(int $meters): int
+    protected function millimetersToInches(float $mm): float
+    {
+        return $this->metersToInches($mm / 1000);
+    }
+
+    protected function metersToFeet(float $meters): float
     {
         return $meters * 3.28084;
     }
 
-    protected function feetToMeters(int $feet): int
+    protected function feetToMeters(float $feet): float
     {
         return $feet / 3.28084;
     }
 
-    protected function metersToMiles(int $meters): int
+    protected function metersToMiles(float $meters): float
     {
         return $meters * 0.00062137;
     }
@@ -167,6 +172,7 @@ abstract class AbstractWeatherService
         $R = 8.31432; // universal gas constant
         $T = $this->celsiusToKelvin($this->fahrenheitToCelsius($tempF)); // temperature in kelvin
         $P = $P0 * exp( (-$g * $M * $h) / ($R * $T) );
+
         return $this->pascalToMillibar($P);
     }
 
@@ -174,7 +180,23 @@ abstract class AbstractWeatherService
     {
         $standardPressure = $this->getPressureAtAltitude($feet, $tempF);
 
+        if ($currentPressure == 0) {
+            return 0;
+        }
+
         return round($currentPressure - $standardPressure, 2);
+    }
+
+    /**
+     * @link https://iridl.ldeo.columbia.edu/dochelp/QA/Basic/dewpoint.html
+     */
+    protected function getDewPoint(float $tempF, float $humidity): float
+    {
+        $T = $this->fahrenheitToCelsius($tempF);
+        $RH = $humidity;
+        $Td = $T - (( 100 - $RH ) / 5);
+
+        return $this->celsiusToFahrenheit($Td);
     }
 
     private function getWeatherData(Location $location): stdClass

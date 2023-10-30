@@ -31,6 +31,8 @@ class OpenWeatherMap extends AbstractWeatherService
 
     protected function hydrate(Weather $weather, \stdClass $data): Weather
     {
+        // print_r($data);
+
         $weatherConditions = [];
         foreach ($data->weather as $condition) {
             $weatherConditions[] = $condition->description;
@@ -38,6 +40,7 @@ class OpenWeatherMap extends AbstractWeatherService
         $weather->current = implode(', ', $weatherConditions);
         $weather->currentTemp = $data->main->temp;
         $weather->currentIcon = 'https://openweathermap.org/img/w/' . $data->weather[0]->icon . '.png';
+        $weather->precipitationHourly = $data->rain->{'1h'} ?? 0;
         $weather->pressure = $this->getPressureDifference($data->main->pressure);
         $weather->humidity = $data->main->humidity;
         $weather->visibility = $this->metersToMiles($data->visibility) . ' miles'; // meters?
@@ -47,6 +50,11 @@ class OpenWeatherMap extends AbstractWeatherService
         $windDirection = $this->degreesToDirection($data->wind->deg);
         // $weather->wind = $data->wind->speed . 'MPH at ' . $data->wind->deg . ' degrees';
         $weather->wind = "From the $windDirection at $windSpeed MPH";
+
+        $weather->location = $data->name;
+        $weather->tempMin = $data->main->temp_min;
+        $weather->tempMax = $data->main->temp_max;
+        $weather->feelsLike = $data->main->feels_like;
 
         $weather->isCached = $data->isCached;
 

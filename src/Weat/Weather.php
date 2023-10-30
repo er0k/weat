@@ -18,22 +18,30 @@ class Weather
     // Degrees in fahrenheit
     public float $currentTemp;
 
+    public float $tempMin;
+    public float $tempMax;
+    public float $feelsLike;
+
     // URL to image icon
     public string $currentIcon;
 
-    /** @var array */
-    public $alerts;
+    public array $alerts;
 
     // Percentage of humidity
     public int $humidity;
 
     public string $wind;
 
+    public float $windChill;
+
     public float $pressure;
 
     public string $visibility;
 
     public string $precipitation;
+
+    public float $precipitationHourly;
+    public float $precipitationDaily;
 
     public string $moon;
 
@@ -59,9 +67,12 @@ class Weather
 
     public string $epoch;
 
-    public string $elevation;
+    // feet
+    public float $elevation;
 
-    public ?string $dewpoint;
+    public float $dewPoint;
 
     public string $clouds;
+
+    public array $zones;
 }
