@@ -43,6 +43,7 @@ class OpenWeatherMap extends AbstractWeatherService
         $weather->precipitationHourly = $data->rain->{'1h'} ?? 0;
         $weather->pressure = $this->getPressureDifference($data->main->pressure);
         $weather->humidity = $data->main->humidity;
+        $weather->dewPoint = $this->getDewPoint($weather->currentTemp, $weather->humidity);
         $weather->visibility = $this->metersToMiles($data->visibility) . ' miles'; // meters?
         $weather->clouds = $data->clouds->all . '%';
 

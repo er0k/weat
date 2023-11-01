@@ -57,11 +57,12 @@ class NOAA extends AbstractWeatherService
         $weather->location = $data->closestStations[0]->name;
         $weather->current = $current->textDescription;;
         $weather->currentTemp = number_format($this->celsiusToFahrenheit($current->temperature->value), 1);
-        $weather->dewPoint = $this->celsiusToFahrenheit($current->dewpoint->value);
         $weather->humidity = round($current->relativeHumidity->value);
+        $weather->dewPoint = $this->celsiusToFahrenheit($current->dewpoint->value);
+        // $weather->dewPoint = $this->getDewPoint($weather->currentTemp, $weather->humidity);
         $weather->visibility = number_format($this->metersToMiles($current->visibility->value), 1) . ' miles';
         $weather->precipitation = number_format((int) $current->precipitationLast6Hours->value, 2) . ' inches';
-        $weather->precipitationHourly = $this->millimetersToInches($current->precipitationLastHour->value);
+        $weather->precipitationHourly = $this->millimetersToInches(floatval($current->precipitationLastHour->value));
 
         // $windSpeed = number_format($this->metersPerSecondToMilesPerHour($current->windSpeed->value), 1);
         $windSpeed = number_format($current->windSpeed->value, 1);

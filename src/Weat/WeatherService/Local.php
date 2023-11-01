@@ -35,7 +35,7 @@ class Local extends AbstractWeatherService
         $weather->precipitationDaily = $data->dailyrainin;
         $weather->wind = "From the {$this->degreesToDirection($data->winddir)} at {$data->windspeedmph} MPH ({$data->windgustmph} MPH gusts)";
         $weather->humidity = $data->humidity;
-        $weather->dewPoint = $this->getDewPoint($data->tempf, $data->humidity);
+        $weather->dewPoint = $this->getDewPoint($weather->currentTemp, $weather->humidity);
         $weather->visibility = '';
         $pressure = $this->inchesHgToMillibar($data->baromabsin);
         $weather->pressure = $this->getPressureDifference($pressure, 950, $data->tempf);
