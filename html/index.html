@@ -11,7 +11,7 @@
 
 <div id="services" v-scope="fetchData()">
     <p v-if="location">{{location.city}}, {{location.state}} {{location.zip}}</p>
-    <p v-if="sun">sunrise: {{sun.rise.date}}, sunset: {{sun.set.date}}</p>
+    <p v-if="sun">sunrise: {{sun.rise}}, sunset: {{sun.set}}</p>
 
     <button
         v-for="(service, index) in services"

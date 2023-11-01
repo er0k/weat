@@ -24,8 +24,8 @@ class Weat
         $service = $this->getService();
 
         $location = (new Locator($config))->getLocation();
+        $sun = (new SolarTracker())->getSun($location);
         $weather = (new WeatherService($config, $service))->getWeather($location);
-        $sun = (new SolarTracker())->getSun($location, $weather);
 
         $output = [
             'location' => $location,
