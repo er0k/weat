@@ -6,6 +6,8 @@ class Weather
 {
     public bool $isCached;
 
+    public int $service;
+
     public string $location;
 
     public string $timeFriendly;

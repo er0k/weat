@@ -13,6 +13,8 @@ abstract class AbstractWeatherService
 {
     const CACHE_TTL_SECONDS = 600;
 
+    protected const TYPE = -1;
+
     protected Config $config;
 
     protected WeatherStorage $store;
@@ -32,6 +34,7 @@ abstract class AbstractWeatherService
         }
 
         $weather = new Weather();
+        $weather->service = $this->getServiceType();
 
         $data = $this->getWeatherData($location);
 
@@ -197,6 +200,12 @@ abstract class AbstractWeatherService
         $Td = $T - (( 100 - $RH ) / 5);
 
         return $this->celsiusToFahrenheit($Td);
+    }
+
+
+    private function getServiceType(): int
+    {
+        return static::TYPE;
     }
 
     private function getWeatherData(Location $location): stdClass
