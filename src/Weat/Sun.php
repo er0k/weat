@@ -26,13 +26,13 @@ namespace Weat;
  */
 class Sun
 {
-    public string $astronomical_dawn;
-    public string $nautical_dawn;
-    public string $civil_dawn;
+    public string $astronomicalDawn;
+    public string $nauticalDawn;
+    public string $civilDawn;
     public string $rise;
     public string $zenith;
     public string $set;
-    public string $civil_dusk;
-    public string $nautical_dusk;
-    public string $astronomical_dusk;
+    public string $civilDusk;
+    public string $nauticalDusk;
+    public string $astronomicalDusk;
 }

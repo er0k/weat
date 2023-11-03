@@ -9,7 +9,7 @@ use Weat\Sun;
 
 class SolarTracker
 {
-    public function getSun(Location $location): Sun
+    public function getSun(Location $location, string $time): Sun
     {
         $sun = new Sun();
 
@@ -18,27 +18,39 @@ class SolarTracker
         }
 
         $dateTimeZone= new DateTimeZone($location->timezone);
+        $dateTime = new DateTime($time, $dateTimeZone);
 
-        $sunInfo = date_sun_info(time(), $location->lat, $location->lon);
+        $sunInfo = date_sun_info($dateTime->getTimeStamp(), $location->lat, $location->lon);
 
-        $sun->astronomical_dawn = $this->cleanTime($sunInfo['astronomical_twilight_begin'], $dateTimeZone);
-        $sun->nautical_dawn = $this->cleanTime($sunInfo['nautical_twilight_begin'], $dateTimeZone);
-        $sun->civil_dawn = $this->cleanTime($sunInfo['civil_twilight_begin'], $dateTimeZone);
-        $sun->rise = $this->cleanTime($sunInfo['sunrise'], $dateTimeZone);
-        $sun->zenith = $this->cleanTime($sunInfo['transit'], $dateTimeZone);
-        $sun->set = $this->cleanTime($sunInfo['sunset'], $dateTimeZone);
-        $sun->civil_dusk = $this->cleanTime($sunInfo['civil_twilight_end'], $dateTimeZone);
-        $sun->nautical_dusk = $this->cleanTime($sunInfo['nautical_twilight_end'], $dateTimeZone);
-        $sun->astronomical_dusk = $this->cleanTime($sunInfo['astronomical_twilight_end'], $dateTimeZone);
-
+        foreach ($this->sunKeysMap() as $phpKey => $weatKey) {
+            $t = new DateTime('@' . $sunInfo[$phpKey]);
+            $sun->{$weatKey} = $t->setTimeZone($dateTimeZone)->format(DateTime::ATOM);
+        }
         return $sun;
     }
 
-    private function cleanTime(int $epoch, DateTimeZone $tz): string
+    public function getSuns(Location $location): array
     {
-        return (new DateTime())
-            ->setTimeZone($tz)
-            ->setTimestamp($epoch)
-            ->format(DateTime::ATOM);
+        $suns = [];
+        foreach (['yesterday', 'today', 'tomorrow'] as $time) {
+            $suns[$time] = $this->getSun($location, $time);
+        }
+
+        return $suns;
+    }
+
+    private function sunKeysMap(): array
+    {
+        return [
+            'astronomical_twilight_begin' => 'astronomicalDawn',
+            'nautical_twilight_begin' => 'nauticalDawn',
+            'civil_twilight_begin' => 'civilDawn',
+            'sunrise' => 'rise',
+            'transit' => 'zenith',
+            'sunset' => 'set',
+            'civil_twilight_end' => 'civilDusk',
+            'nautical_twilight_end' => 'nauticalDusk',
+            'astronomical_twilight_end' => 'astronomicalDusk',
+        ];
     }
 }
