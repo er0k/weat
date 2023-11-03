@@ -5,19 +5,33 @@ const fetchUrl = async url => {
     return resp.json();
 }
 
-const getServices = async _=> {
+const getWeatherServices = async _=> {
     return await fetchUrl(`${WEAT}?l`);
 }
 
-const getWeather = async service => {
-    return await fetchUrl(`${WEAT}?s=${service.id}`);
+const getLocation = async _=> {
+    return await fetchUrl(`${WEAT}?x`);
 }
+
+const getSun = async _=> {
+    return await fetchUrl(`${WEAT}?s`);
+}
+
+const getMoon = async _=> {
+    return await fetchUrl(`${WEAT}?m`);
+}
+
+const getWeather = async service => {
+    return await fetchUrl(`${WEAT}?w=${service.id}`);
+}
+
 
 function fetchData() {
     return {
         services: null,
         weather: null,
         location: null,
+        moon: null,
         sun: null,
         activeButton: null,
         activateService(service, index) {
@@ -26,17 +40,21 @@ function fetchData() {
         },
         async getWeatherFromService(service, activate = false) {
             let weather = await getWeather(service);
-            this.location = weather.location;
-            this.sun = weather.sun;
             if (activate) {
-                this.weather = weather.weather;
+                this.weather = weather;
             }
         },
         get _() {
             return (async _=> {
-                let services = await getServices();
+
+                this.sun = await getSun();
+                this.moon = await getMoon();
+                this.location = await getLocation();
+
+                let services = await getWeatherServices();
                 this.services = services;
                 for (let [i, service] of services.entries()) {
+                    console.log(i, service);
                     if (i == 0) {
                         this.activateService(service, i);
                     } else {

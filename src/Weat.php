@@ -3,6 +3,7 @@
 use Weat\Config;
 use Weat\Locator;
 use Weat\Receiver;
+use Weat\LunarTracker;
 use Weat\SolarTracker;
 use Weat\WeatherService;
 
@@ -12,37 +13,74 @@ class Weat
     {
         $config = new Config();
 
-        if ($this->isListRequested()) {
-            return $this->sendJson($this->getActiveServices($config));
-        }
-
-        if (!$this->isServiceRequested()) {
+        if ($this->wantsNothing()) {
             (new Receiver($config))->save();
             return '';
         }
 
-        $service = $this->getService();
-
-        $location = (new Locator($config))->getLocation();
-        $sun = (new SolarTracker())->getSun($location);
-        $weather = (new WeatherService($config, $service))->getWeather($location);
-
-        $output = [
-            'location' => $location,
-            'weather' => $weather,
-            'sun' => $sun,
-        ];
-
-        return $this->sendJson($output);
-    }
-
-    private function isListRequested(): bool
-    {
-        if (isset($_GET['l'])) {
-            return true;
+        if ($this->wantsList()) {
+            return $this->sendJson($this->getActiveServices($config));
         }
 
-        return false;
+        $location = (new Locator($config))->getLocation();
+
+        if ($this->wantsMoon()) {
+            return $this->sendJson((new LunarTracker())->getMoons($location));
+        }
+
+        if ($this->wantsLocation()) {
+            return $this->sendJson($location);
+        }
+
+        if ($this->wantsSun()) {
+            return $this->sendJson((new SolarTracker())->getSuns($location));
+        }
+
+        $service = $this->getService();
+
+        if ($this->wantsWeather()) {
+            return $this->sendJson((new WeatherService($config, $service))->getWeather($location));
+        }
+    }
+
+    private function wantsList(): bool
+    {
+        return isset($_GET['l']);
+    }
+
+    private function wantsMoon(): bool
+    {
+        return isset($_GET['m']);
+    }
+
+    private function wantsSun(): bool
+    {
+        return isset($_GET['s']);
+    }
+
+    private function wantsLocation(): bool
+    {
+        return isset($_GET['x']);
+    }
+
+    private function wantsWeather(): bool
+    {
+        return isset($_GET['w']);
+    }
+
+    private function wantsNothing(): bool
+    {
+        if (
+            $this->wantsList()
+            || $this->wantsMoon()
+            || $this->wantsSun()
+            || $this->wantsLocation()
+            || $this->wantsWeather()
+        ) {
+            return false;
+        }
+
+        return true;
     }
 
     private function getActiveServices(Config $config): array
@@ -57,22 +95,13 @@ class Weat
         return array_values($serviceList);
     }
 
-    private function isServiceRequested(): bool
-    {
-        if (isset($_GET['s'])) {
-            return true;
-        }
-
-        return false;
-    }
-
     private function getService(): int
     {
-        if (!in_array($_GET['s'], WeatherService::TYPES)) {
+        if (!in_array($_GET['w'], WeatherService::TYPES)) {
             $this->badRequest();
         }
 
-        return $_GET['s'];
+        return $_GET['w'];
     }
 
     private function badRequest(): Void
@@ -81,7 +110,7 @@ class Weat
         die();
     }
 
-    private function sendJson(array $out): string
+    private function sendJson($out): string
     {
         header('Content-Type: application/json; charset=utf-8');
         return json_encode($out);

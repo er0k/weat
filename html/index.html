@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<div id="services" v-scope="fetchData()">
+<div v-scope="fetchData()">
     <p v-if="location">{{location.city}}, {{location.state}} {{location.zip}}</p>
     <p v-if="sun">sunrise: {{sun.today.rise}}, sunset: {{sun.today.set}}</p>
 
@@ -41,12 +41,16 @@
                 <dt>{{room.name}}</dt><dd>{{room.temp}}&#176;F ({{room.humidity}}%)</dd>
             </dl>
         </div>
-        <!-- <pre>{{weather}}</pre> -->
     </div>
-
+    <div id="debug">
+        <pre>{{weather}}</pre>
+        <pre>{{location}}</pre>
+        <pre>{{sun}}</pre>
+        <pre>{{moon}}</pre>
+    </div>
 </div>
 
-<script src="weat-test.js"></script>
+<script src="weat.js"></script>
 
 </body>
 </html>
