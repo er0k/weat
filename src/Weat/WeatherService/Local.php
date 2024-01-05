@@ -64,6 +64,11 @@ class Local extends AbstractWeatherService
 
         if ($weather->currentTemp < 30) {
             $current .= "fucking cold";
+            for ($i = 1; $i < (30 - $weather->currentTemp); $i++) {
+                if ($i % 5 == 0) {
+                    $current .= "!";
+                }
+            }
         } elseif ($weather->currentTemp < 35) {
             $current .= "cold";
         } elseif ($weather->currentTemp < 40) {
