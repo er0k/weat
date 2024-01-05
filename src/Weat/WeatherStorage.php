@@ -40,6 +40,14 @@ class WeatherStorage
         return $result['data'];
     }
 
+    /**
+     * @todo add a virtual column and index it instead of sorting by rowid, eg:
+     * ALTER TABLE weat ADD COLUMN at TEXT AS (json_extract(data, '$.dateutc'));
+     * CREATE INDEX idx_at ON weat(at);
+     * maybe make it an idempotent migration as part of createTable()?
+     * then ORDER BY at for more accurate sorting
+     * @todo benchmark
+     */
     public function fetchHistory(int $limit = 60): array
     {
         $query = "SELECT
