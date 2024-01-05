@@ -63,7 +63,7 @@ class WeatherStorage
                 json_extract(weat.data, '$.temp3f') as temp3f,
                 json_extract(weat.data, '$.humidity3') as humidity3
             FROM weat
-            ORDER BY json_extract(weat.data, '$.dateutc') DESC
+            ORDER BY rowid DESC
             LIMIT :limit";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':limit', $limit, SQLITE3_INTEGER);
