@@ -43,11 +43,12 @@
             </dl>
         </div>
     </div>
-    <div id="debug">
-        <pre>{{weather}}</pre>
-        <pre>{{location}}</pre>
+    <a href="#" @click.prevent="showDebug()">debug</a>
+    <div id="debug" v-if="debug">
         <pre>{{sun}}</pre>
         <pre>{{moon}}</pre>
+        <pre>{{location}}</pre>
+        <pre>{{weather}}</pre>
     </div>
 </div>
 

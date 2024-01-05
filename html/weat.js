@@ -13,9 +13,13 @@ function fetchData() {
         moon: null,
         sun: null,
         activeButton: null,
+        debug: false,
         activateService(service, index) {
             this.activeButton = index;
             this.getWeatherFromService(service, true);
+        },
+        showDebug() {
+            this.debug = !this.debug;
         },
         async getWeatherFromService(service, activate = false) {
             let weather = await fetchUrl(`${WEAT}?w=${service.id}`);
