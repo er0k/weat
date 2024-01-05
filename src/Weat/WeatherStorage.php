@@ -40,6 +40,43 @@ class WeatherStorage
         return $result['data'];
     }
 
+    public function fetchHistory(int $limit = 60): array
+    {
+        $query = "SELECT
+                json_extract(weat.data, '$.dateutc') as dateutc,
+                json_extract(weat.data, '$.tempf') as tempf,
+                json_extract(weat.data, '$.humidity') as humidity,
+                json_extract(weat.data, '$.windspeedmph') as windspeedmph,
+                json_extract(weat.data, '$.windgustmph') as windgustmph,
+                json_extract(weat.data, '$.winddir') as winddir,
+                json_extract(weat.data, '$.uv') as uv,
+                json_extract(weat.data, '$.solarradiation') as solarradiation,
+                json_extract(weat.data, '$.hourlyrainin') as hourlyrainin,
+                json_extract(weat.data, '$.dailyrainin') as dailyrainin,
+                json_extract(weat.data, '$.baromabsin') as baromabsin,
+                json_extract(weat.data, '$.tempinf') as tempinf,
+                json_extract(weat.data, '$.humidityin') as humidityin,
+                json_extract(weat.data, '$.temp1f') as temp1f,
+                json_extract(weat.data, '$.humidity1') as humidity1,
+                json_extract(weat.data, '$.temp2f') as temp2f,
+                json_extract(weat.data, '$.humidity2') as humidity2,
+                json_extract(weat.data, '$.temp3f') as temp3f,
+                json_extract(weat.data, '$.humidity3') as humidity3
+            FROM weat
+            ORDER BY json_extract(weat.data, '$.dateutc') DESC
+            LIMIT :limit";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':limit', $limit, SQLITE3_INTEGER);
+        $result = $stmt->execute();
+
+        $data = [];
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+            array_push($data, $row);
+        };
+
+        return $data;
+    }
+
     private function getDb(string $dbPath)
     {
         if ($this->db) {
