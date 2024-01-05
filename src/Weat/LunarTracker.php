@@ -12,7 +12,7 @@ class LunarTracker
 {
     public $foo;
 
-    public function getMoon(Location $location, string $time = 'today'): Moon
+    public function getMoon(Location $location, string $time): Moon
     {
         $moon = new Moon();
 
@@ -24,8 +24,11 @@ class LunarTracker
         $moon->phase = $mp->getPhaseName();
         $moon->illumination = $mp->getIllumination();
         $moon->age = $mp->getAge();
-        $moon->full = $this->formatTime($mp->getPhaseFullMoon(), $dateTimeZone);
-        $moon->new = $this->formatTime($mp->getPhaseNewMoon(), $dateTimeZone);
+        $moon->fullCurrent = $this->formatTime($mp->getPhaseFullMoon(), $dateTimeZone);
+        $moon->fullNext = $this->formatTime($mp->getPhaseNextFullMoon(), $dateTimeZone);
+        $moon->newCurrent = $this->formatTime($mp->getPhaseNewMoon(), $dateTimeZone);
+        $moon->newNext = $this->formatTime($mp->getPhaseNextNewMoon(), $dateTimeZone);
+
 
         return $moon;
     }

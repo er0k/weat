@@ -7,6 +7,8 @@ class Moon
     public string $phase;
     public float $illumination;
     public float $age;
-    public string $full;
-    public string $new;
+    public string $fullCurrent;
+    public string $fullNext;
+    public string $newCurrent;
+    public string $newNext;
 }
