@@ -12,6 +12,7 @@
 <div v-scope="fetchData()">
     <p v-if="location">{{location.city}}, {{location.state}} {{location.zip}}</p>
     <p v-if="sun">sunrise: {{sun.today.rise}}, sunset: {{sun.today.set}}</p>
+    <p v-if="moon">moon: {{moon.today.phase}}, {{moon.today.age}} days old,  {{moon.today.illumination}}% illuminated</p>
 
     <button
         v-for="(service, index) in services"

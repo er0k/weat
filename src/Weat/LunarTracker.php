@@ -22,8 +22,8 @@ class LunarTracker
         $mp = new MoonPhase($dateTime);
 
         $moon->phase = $mp->getPhaseName();
-        $moon->illumination = $mp->getIllumination();
-        $moon->age = $mp->getAge();
+        $moon->illumination = round($mp->getIllumination(), 4) * 100;
+        $moon->age = round($mp->getAge(), 2);
         $moon->fullCurrent = $this->formatTime($mp->getPhaseFullMoon(), $dateTimeZone);
         $moon->fullNext = $this->formatTime($mp->getPhaseNextFullMoon(), $dateTimeZone);
         $moon->newCurrent = $this->formatTime($mp->getPhaseNewMoon(), $dateTimeZone);
