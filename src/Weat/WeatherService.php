@@ -33,6 +33,17 @@ class WeatherService
         return $this->service->getWeather($location);
     }
 
+    public static function getActiveServices(Config $config): array
+    {
+        $serviceList = self::ACTIVE_TYPES;
+
+        if (!self::isLocalAllowed($config)) {
+            unset($serviceList[self::TYPES['LOCAL']]);
+        }
+
+        return array_values($serviceList);
+    }
+
     private function getService(Config $config, int $service): AbstractWeatherService
     {
         switch ($service) {
@@ -47,6 +58,9 @@ class WeatherService
                 // return new WeatherService\DarkSky($config);
                 $this->gone("RIP darksky");
             case self::TYPES['LOCAL']:
+                if (!self::isLocalAllowed($config)) {
+                    $this->gone("go away");
+                }
                 // This is pretty hacky, but it makes sure we aren't caching data
                 // from the local weather service. Caching is really only useful
                 // when we get data from weather APIs. Eventually the makeshift
@@ -56,6 +70,15 @@ class WeatherService
             default:
                 throw new Exception("uknown weather service: {$service}");
         }
+    }
+
+    private static function isLocalAllowed(Config $config): bool
+    {
+        // don't show local weather station at the public URL
+        if ($_SERVER['HTTP_HOST'] != $config->public_url) {
+            return true;
+        }
+        return false;
     }
 
     private function gone(string $msg)

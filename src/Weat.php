@@ -19,7 +19,7 @@ class Weat
         }
 
         if ($this->wantsList()) {
-            return $this->sendJson($this->getActiveServices($config));
+            return $this->sendJson(WeatherService::getActiveServices($config));
         }
 
         $location = (new Locator($config))->getLocation();
@@ -36,7 +36,7 @@ class Weat
             return $this->sendJson((new SolarTracker())->getSuns($location));
         }
 
-        $service = $this->getService();
+        $service = $this->getService($config);
 
         if ($this->wantsWeather()) {
             return $this->sendJson((new WeatherService($config, $service))->getWeather($location));
@@ -81,18 +81,6 @@ class Weat
         }
 
         return true;
-    }
-
-    private function getActiveServices(Config $config): array
-    {
-        $serviceList = WeatherService::ACTIVE_TYPES;
-
-        // don't show local weather station at the public URL
-        if ($_SERVER['HTTP_HOST'] == $config->public_url) {
-            unset($serviceList[WeatherService::TYPES['LOCAL']]);
-        }
-
-        return array_values($serviceList);
     }
 
     private function getService(): int
