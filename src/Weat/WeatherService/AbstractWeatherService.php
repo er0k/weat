@@ -41,6 +41,8 @@ abstract class AbstractWeatherService
         return $this->hydrate($weather, $data);
     }
 
+    abstract public function getHistory(Location $location): array;
+
     abstract protected function getWeatherDataFromService(Location $location): stdClass;
 
     /**

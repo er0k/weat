@@ -36,10 +36,12 @@ class Weat
             return $this->sendJson((new SolarTracker())->getSuns($location));
         }
 
-        $service = $this->getService($config);
-
         if ($this->wantsWeather()) {
-            return $this->sendJson((new WeatherService($config, $service))->getWeather($location));
+            $weatherService = new WeatherService($config, $this->getService($config));
+            if ($this->wantsHistory()) {
+                return $this->sendJson($weatherService->getWeatherHistory($location));
+            }
+            return $this->sendJson($weatherService->getWeather($location));
         }
     }
 
@@ -66,6 +68,11 @@ class Weat
     private function wantsWeather(): bool
     {
         return isset($_GET['w']);
+    }
+
+    private function wantsHistory(): bool
+    {
+        return isset($_GET['h']);
     }
 
     private function wantsNothing(): bool

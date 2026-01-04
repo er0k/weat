@@ -15,6 +15,11 @@ class NOAA extends AbstractWeatherService
     const META_URL = 'https://api.weather.gov/points/%.4f,%.4f';
     const CURRENT_URL = 'https://api.weather.gov/stations/%s/observations/latest';
 
+    public function getHistory(Location $location): array
+    {
+        return [];
+    }
+
     /**
      * @link https://www.weather.gov/documentation/services-web-api
      * @param  Location $location

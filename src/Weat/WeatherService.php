@@ -33,6 +33,11 @@ class WeatherService
         return $this->service->getWeather($location);
     }
 
+    public function getWeatherHistory(Location $location): array
+    {
+        return $this->service->getHistory($location);
+    }
+
     public static function getActiveServices(Config $config): array
     {
         $serviceList = self::ACTIVE_TYPES;

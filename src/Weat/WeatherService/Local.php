@@ -15,13 +15,16 @@ class Local extends AbstractWeatherService
 
     protected Config $config;
 
+    public function getHistory(Location $location): array
+    {
+        return $this->store->fetchHistory();
+    }
+
     protected function getWeatherDataFromService(Location $location): stdClass
     {
         $jsonData = $this->store->fetchLatest(self::TYPE);
 
         $data = json_decode($jsonData);
-
-        $data->history = $this->store->fetchHistory();
 
         return $data;
     }
@@ -61,8 +64,6 @@ class Local extends AbstractWeatherService
         // $weather->alerts = ["here is an alert"];
 
         $weather->current = $this->getCurrentConditions($weather);
-
-        $weather->history = $data->history;
 
         return $weather;
     }
