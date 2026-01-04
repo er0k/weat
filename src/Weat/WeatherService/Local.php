@@ -39,8 +39,14 @@ class Local extends AbstractWeatherService
         $weather->humidity = $data->humidity;
         $weather->dewPoint = $this->getDewPoint($weather->currentTemp, $weather->humidity);
         $weather->visibility = '';
-        $pressure = $this->inchesHgToMillibar($data->baromabsin);
-        $weather->pressure = $this->getPressureDifference($pressure, 950, $data->tempf);
+
+        if (isset($data->baromabsin)) {
+            $pressure = $this->inchesHgToMillibar($data->baromabsin);
+            $weather->pressure = $this->getPressureDifference($pressure, 950, $data->tempf);
+        } else {
+            error_log("no pressure data from local station! check barometer");
+        }
+
         $indoor = [];
         foreach($this->getRoomMap() as $id => $name) {
             $tempKey = "temp{$id}f";
