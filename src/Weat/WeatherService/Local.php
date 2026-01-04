@@ -110,6 +110,8 @@ class Local extends AbstractWeatherService
             1 => 'bedroom',
             2 => 'garage',
             3 => 'basement',
+            5 => 'office',
+            6 => 'baby',
         ];
     }
 }
