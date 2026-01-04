@@ -30,12 +30,15 @@ class Local extends AbstractWeatherService
     {
         // print_r($data);
 
+        $weather->location = "Cemetery Hill";
         $weather->currentTemp = $data->tempf;
         $weather->currentIcon = "idk.png";
         $weather->precipitation = "{$data->hourlyrainin}\" hourly ({$data->dailyrainin}\" daily)";
         $weather->precipitationHourly = $data->hourlyrainin;
         $weather->precipitationDaily = $data->dailyrainin;
-        $weather->wind = "From the {$this->degreesToDirection($data->winddir)} at {$data->windspeedmph} MPH ({$data->windgustmph} MPH gusts)";
+        $weather->wind = "From the {$this->degreesToDirection($data->winddir)} at {$data->windspeedmph} MPH ({$data->windgustmph} MPH gusts, daily max {$data->maxdailygust} MPH)";
+        $weather->uvIndex = $data->uv;
+        $weather->solarRadiation = $data->solarradiation;
         $weather->humidity = $data->humidity;
         $weather->dewPoint = $this->getDewPoint($weather->currentTemp, $weather->humidity);
         $weather->visibility = '';

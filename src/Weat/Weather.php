@@ -36,6 +36,10 @@ class Weather
 
     public float $windChill;
 
+    public int $uvIndex;
+
+    public float $solarRadiation; 
+
     public float $pressure;
 
     public string $visibility;

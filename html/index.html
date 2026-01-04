@@ -31,6 +31,7 @@
         <h2>{{weather.current}}</h2>
         <img v-bind:src="weather.currentIcon" height="75" width="75">
         <dl>
+            <dt>location</dt><dd>{{weather.location}}</dd>
             <dt>precipitation</dt><dd>{{weather.precipitationHourly}}" hourly</dd>
             <dt>pressure</dt><dd>{{weather.pressure}}mb</dd>
             <dt>humidity</dt><dd>{{weather.humidity}} %</dd>
